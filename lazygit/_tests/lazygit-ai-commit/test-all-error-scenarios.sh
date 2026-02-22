@@ -31,7 +31,7 @@ test_scenario() {
 
 # Scenario 1: Empty diff input
 test_scenario "Empty diff input to AI generator" "No diff input provided" \
-    bash -c "echo '' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+    bash -c 'echo "" | AI_BACKEND=mock "$1"/_scripts/lazygit-ai-commit/ai-commit-generator.sh' -- "$SCRIPT_DIR"
 
 # Mock backup and cleanup trap
 MOCK_TOOL_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
@@ -54,7 +54,7 @@ cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$EMPTY_AI" "$MOCK_TOOL_PATH"
 
 test_scenario "AI tool returns empty output" "AI tool returned empty output" \
-    bash -c "echo 'test diff' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+    bash -c 'echo "test diff" | AI_BACKEND=mock "$1"/_scripts/lazygit-ai-commit/ai-commit-generator.sh' -- "$SCRIPT_DIR"
 
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$EMPTY_AI"
@@ -71,7 +71,7 @@ cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$FAILING_AI" "$MOCK_TOOL_PATH"
 
 test_scenario "AI tool fails with non-zero exit code" "AI tool failed" \
-    bash -c "echo 'test diff' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+    bash -c 'echo "test diff" | AI_BACKEND=mock "$1"/_scripts/lazygit-ai-commit/ai-commit-generator.sh' -- "$SCRIPT_DIR"
 
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$FAILING_AI"
@@ -88,18 +88,18 @@ cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$SLOW_AI" "$MOCK_TOOL_PATH"
 
 test_scenario "AI tool times out" "timed out" \
-    bash -c "echo 'test diff' | TIMEOUT_SECONDS=1 AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+    bash -c 'echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock "$1"/_scripts/lazygit-ai-commit/ai-commit-generator.sh' -- "$SCRIPT_DIR"
 
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$SLOW_AI"
 
 # Scenario 5: Parser receives empty input
 test_scenario "Parser receives empty input" "No AI output provided" \
-    bash -c "echo '' | ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh"
+    bash -c 'echo "" | "$1"/_scripts/lazygit-ai-commit/parse-ai-output.sh' -- "$SCRIPT_DIR"
 
 # Scenario 6: Parser receives whitespace-only input
 test_scenario "Parser receives whitespace-only input" "No valid commit messages found" \
-    bash -c "echo -e '\n  \n\t\n' | ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh"
+    bash -c 'echo -e "\n  \n\t\n" | "$1"/_scripts/lazygit-ai-commit/parse-ai-output.sh' -- "$SCRIPT_DIR"
 
 # Scenario 7: Pipeline failure propagation
 test_scenario "Pipeline failure propagation (pipefail)" "Pipeline failure" \
