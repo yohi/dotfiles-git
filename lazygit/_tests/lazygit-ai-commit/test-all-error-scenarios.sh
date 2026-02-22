@@ -30,15 +30,8 @@ test_scenario() {
 }
 
 # Scenario 1: Empty diff input
-echo "Scenario 1: Empty diff input to AI generator"
-if echo "" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "No diff input provided"; then
-    echo "✓ PASS: Empty diff detected"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: Empty diff not detected"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
-echo ""
+test_scenario "Empty diff input to AI generator" "No diff input provided" \
+    bash -c "echo '' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
 
 # Mock backup and cleanup trap
 MOCK_TOOL_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
@@ -51,7 +44,6 @@ cleanup() {
 trap cleanup EXIT
 
 # Scenario 2: AI tool returns empty output
-echo "Scenario 2: AI tool returns empty output"
 EMPTY_AI=$(mktemp)
 cat > "$EMPTY_AI" << 'EOF'
 #!/bin/bash
@@ -60,18 +52,14 @@ EOF
 chmod +x "$EMPTY_AI"
 cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$EMPTY_AI" "$MOCK_TOOL_PATH"
-if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool returned empty output"; then
-    echo "✓ PASS: Empty AI output detected"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: Empty AI output not detected"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
+
+test_scenario "AI tool returns empty output" "AI tool returned empty output" \
+    bash -c "echo 'test diff' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$EMPTY_AI"
-echo ""
+
 # Scenario 3: AI tool fails with error
-echo "Scenario 3: AI tool fails with non-zero exit code"
 FAILING_AI=$(mktemp)
 cat > "$FAILING_AI" << 'EOF'
 #!/bin/bash
@@ -81,19 +69,14 @@ EOF
 chmod +x "$FAILING_AI"
 cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$FAILING_AI" "$MOCK_TOOL_PATH"
-if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool failed"; then
-    echo "✓ PASS: AI tool failure detected"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: AI tool failure not detected"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
+
+test_scenario "AI tool fails with non-zero exit code" "AI tool failed" \
+    bash -c "echo 'test diff' | AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$FAILING_AI"
-echo ""
 
 # Scenario 4: AI tool times out
-echo "Scenario 4: AI tool times out"
 SLOW_AI=$(mktemp)
 cat > "$SLOW_AI" << 'EOF'
 #!/bin/bash
@@ -103,60 +86,28 @@ EOF
 chmod +x "$SLOW_AI"
 cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
 cp "$SLOW_AI" "$MOCK_TOOL_PATH"
-if echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "timed out"; then
-    echo "✓ PASS: Timeout detected"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: Timeout not detected"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
+
+test_scenario "AI tool times out" "timed out" \
+    bash -c "echo 'test diff' | TIMEOUT_SECONDS=1 AI_BACKEND=mock ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+
 mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
 rm "$SLOW_AI"
-echo ""
+
 # Scenario 5: Parser receives empty input
-echo "Scenario 5: Parser receives empty input"
-if echo "" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1 | grep -q "No AI output provided"; then
-    echo "✓ PASS: Parser detects empty input"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: Parser doesn't detect empty input"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
-echo ""
+test_scenario "Parser receives empty input" "No AI output provided" \
+    bash -c "echo '' | ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh"
 
 # Scenario 6: Parser receives whitespace-only input
-echo "Scenario 6: Parser receives whitespace-only input"
-if echo -e "\n  \n\t\n" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1 | grep -q "No valid commit messages found"; then
-    echo "✓ PASS: Parser detects whitespace-only input"
-    PASS_COUNT=$((PASS_COUNT + 1))
-else
-    echo "✗ FAIL: Parser doesn't detect whitespace-only input"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-fi
-echo ""
+test_scenario "Parser receives whitespace-only input" "No valid commit messages found" \
+    bash -c "echo -e '\n  \n\t\n' | ${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh"
 
 # Scenario 7: Pipeline failure propagation
-echo "Scenario 7: Pipeline failure propagation (pipefail)"
-FAILING_AI=$(mktemp)
-cat > "$FAILING_AI" << 'EOF'
-#!/bin/bash
-exit 1
-EOF
-chmod +x "$FAILING_AI"
-# Test that pipeline failure is caught
-if bash -c "set -o pipefail; echo 'test' | $FAILING_AI | cat" 2>&1; then
-    echo "✗ FAIL: Pipeline failure not propagated"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-else
-    echo "✓ PASS: Pipeline failure propagated correctly"
-    PASS_COUNT=$((PASS_COUNT + 1))
-fi
-rm "$FAILING_AI"
-echo ""
+test_scenario "Pipeline failure propagation (pipefail)" "Pipeline failure" \
+    bash -c "set -o pipefail; (echo 'test' | bash -c 'exit 1' | cat) 2>&1 || echo 'Pipeline failure'"
 
 # Scenario 8: Valid input produces valid output
 echo "Scenario 8: Valid input produces valid output"
-OUTPUT=$(echo "test diff" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1)
+OUTPUT=$(echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1)
 if [ -n "$OUTPUT" ] && echo "$OUTPUT" | grep -q "feat:"; then
     echo "✓ PASS: Valid input produces valid output"
     PASS_COUNT=$((PASS_COUNT + 1))

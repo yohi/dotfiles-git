@@ -4,9 +4,10 @@
 
 ## クイックテスト
 
-完全なテストスイートを実行してすべてが動作することを確認:
+完全なテストスイートを実行してすべてが動作することを確認（`lazygit/_tests/lazygit-ai-commit`ディレクトリに移動してから実行してください）:
 
 ```bash
+cd lazygit/_tests/lazygit-ai-commit
 ./test-complete-workflow.sh
 ```
 

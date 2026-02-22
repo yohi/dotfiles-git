@@ -139,7 +139,7 @@
 
 2. `config.yml`のスクリプトパスを更新:
    
-   `config.yml`を開き、スクリプトをインストールした場所を指すようにパスを更新:
+   `config/config.yml`を開き、スクリプトをインストールした場所を指すようにパスを更新:
    
    ```yaml
    command: |
@@ -152,11 +152,11 @@
 3. 設定をコピーまたはマージ:
    ```bash
    # 既存の設定がない場合:
-   cp config.yml ~/.config/lazygit/config.yml
+   cp config/config.yml ~/.config/lazygit/config.yml
    
    # 既存の設定がある場合、customCommandsセクションをマージ:
    # 両方のファイルを開き、AIコミットコマンドを既存の設定にコピー
-   cat config.yml >> ~/.config/lazygit/config.yml
+   cat config/config.yml >> ~/.config/lazygit/config.yml
    ```
 
 ### ステップ 5: インストールをテスト

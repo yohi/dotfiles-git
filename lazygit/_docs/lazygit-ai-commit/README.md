@@ -78,7 +78,7 @@ export AI_BACKEND=gemini
 ### 4. スクリプトを実行可能にする
 
 ```bash
-chmod +x ai-commit-generator.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 chmod +x lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 chmod +x lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh
 ```
