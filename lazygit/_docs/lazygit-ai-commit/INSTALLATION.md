@@ -25,10 +25,11 @@
 
 #### オプション A: Gemini（推奨）
 
-1. Google Generative AI Pythonパッケージをインストール:
+1. Google Generative AI Pythonパッケージ（SDK）をインストール:
    ```bash
    pip install google-generativeai
    ```
+   注記: これはPythonライブラリであり、 `gemini` という名前の実行ファイルはインストールされません。
 
 2. APIキーを取得:
    - https://aistudio.google.com/app/apikey にアクセス
@@ -204,12 +205,12 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 ### "command not found: gemini"または類似のエラー
 
-**問題**: AI CLIツールがPATHにない
+**問題**: AI CLIツールがPATHにない（Claude/Ollamaの場合）またはGemini SDKがインストールされていない
 
 **解決策**:
-- Pythonパッケージの場合: pipインストール場所がPATHにあることを確認
-- npmパッケージの場合: npm globalのbinがPATHにあることを確認
-- 確認: `which gemini`または`which claude`または`which ollama`
+- Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
+- Claudeの場合: `npm install -g @anthropic-ai/claude-cli` を実行し、npm globalのbinがPATHにあることを確認
+- 確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
 
 ### "GEMINI_API_KEY not set"エラー
 

@@ -42,7 +42,7 @@ lazygit
 Google Geminiで実際のAI駆動メッセージを取得:
 
 ```bash
-# 1. Geminiをインストール
+# 1. Gemini SDK (Python) をインストール
 pip install google-generativeai
 
 # 2. APIキーを取得
@@ -70,6 +70,8 @@ cp config.yml ~/.config/lazygit/config.yml
 lazygit
 # filesビューでCtrl+Aを押す！
 ```
+
+注記: `google-generativeai` は Python SDK です。スクリプト内部で `python3` を介して呼び出されます。 `gemini` という実行ファイルはインストールされません。
 
 ### パス 3: Ollamaセットアップ（プライバシー重視）
 
@@ -143,7 +145,7 @@ export AI_BACKEND="gemini"
 **問題**: バックエンドがインストールされていないか実行されていない
 
 **修正**:
-- Gemini: `pip install google-generativeai`
+- Gemini: `pip install google-generativeai` (Python SDK)
 - Claude: `npm install -g @anthropic-ai/claude-cli`
 - Ollama: `ollama serve`が実行中であることを確認
 

@@ -18,7 +18,7 @@ LazyGitに直接統合されたAI駆動のコミットメッセージ生成。�
 #### オプション A: Gemini（推奨 - 高速＆無料）
 
 ```bash
-# Gemini CLIをインストール
+# Gemini SDK (Python) をインストール
 pip install google-generativeai
 
 # APIキーを設定
@@ -26,7 +26,7 @@ export GEMINI_API_KEY="your-api-key-here"
 ```
 
 APIキーの取得: https://aistudio.google.com/app/apikey
-注記: 2025年9–10月に既存キーが管理UIから消える問題が発生していましたが、現在は解消されています。もしキーが見当たらない場合は「Google Cloud Consoleの認証情報ページ」を確認するか、「プロジェクトの再インポート」を試してください。
+注記: `google-generativeai` は Python SDK です。スクリプト内部で `python3` を介して呼び出されます。 `gemini` という実行ファイルはインストールされません。
 
 #### オプション B: Claude（コード理解に最適）
 
@@ -545,12 +545,12 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 #### "command not found: gemini"または類似のエラー
 
-**問題**: AI CLIツールがPATHにない
+**問題**: AI CLIツールがPATHにない（Claude/Ollamaの場合）またはGemini SDKがインストールされていない
 
 **解決策**:
-- Pythonパッケージの場合: `pip install --user google-generativeai`を実行し、`~/.local/bin`がPATHにあることを確認
-- npmパッケージの場合: `npm install -g @anthropic-ai/claude-cli`を実行し、npm globalのbinがPATHにあることを確認
-- インストールを確認: `which gemini`または`which claude`または`which ollama`
+- Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
+- Claudeの場合: `npm install -g @anthropic-ai/claude-cli` を実行し、npm globalのbinがPATHにあることを確認
+- インストールを確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
 
 #### LazyGitがCtrl+Aオプションを表示しない
 
@@ -578,7 +578,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 **解決策**:
 - APIキーが正しく設定されているか確認: `echo $GEMINI_API_KEY`
-- AIツールがインストールされているか確認: `which gemini`または`ollama list`
+- AIツールがインストールされているか確認: `python3 -c "import google.generativeai"` (Gemini) または `claude --version` または `ollama list`
 - インターネット接続を確認（クラウドAIの場合）
 - Ollamaの場合: サービスが実行中であることを確認: `ollama serve`
 - AIツールを独立してテスト: `echo "test" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh`
@@ -777,6 +777,7 @@ lazygit 2>&1 | tee lazygit-errors.log
 | "No valid commit messages found" | パーサーが空/無効な出力を受信 | AIバックエンドが動作しているか確認 |
 | "command not found" | 設定のスクリプトパスが間違っている | config.ymlで絶対パスを使用 |
 | "GEMINI_API_KEY not set" | 環境変数が欠落 | シェルプロファイルでAPIキーを設定 |
+| "ImportError: No module named 'google'" | Gemini SDK未インストール | `pip install google-generativeai` を実行 |
 
 ## 高度な使い方
 
