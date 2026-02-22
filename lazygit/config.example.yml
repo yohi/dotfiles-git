@@ -111,16 +111,15 @@ customCommands:
           # Requirement 8.2, 8.4: Enhanced error handling with pipefail and timeout
           #
           # Pipeline stages:
-          # 1. Get staged diff (git diff --cached)
-          # 2. Limit size to 12KB (head -c 12000) - prevents token limit issues
-          # 3. Generate messages (ai-commit-generator.sh) - calls AI backend
-          # 4. Parse output (parse-ai-output.sh) - extracts individual messages
+          # 1. Get staged diff (get-staged-diff.sh) - includes UTF-8 safe size limit
+          # 2. Generate messages (ai-commit-generator.sh) - calls AI backend
+          # 3. Parse output (parse-ai-output.sh) - extracts individual messages
           #
           # NOTE: Update these paths to point to where you installed the scripts!
           # Example: /home/username/lazygit-ai-commit/_scripts/ai-commit-generator.sh
           # ========================================================================
           
-          git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+          lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
         
         # ========================================================================
         # Output Parsing Configuration

@@ -25,7 +25,7 @@ pip install google-generativeai
 export GEMINI_API_KEY="your-api-key-here"
 ```
 
-APIキーの取得: https://aistudio.google.com/app/apikey
+APIキーの取得: <https://aistudio.google.com/app/apikey>
 注記: `google-generativeai` は Python SDK です。スクリプト内部で `python3` を介して呼び出されます。 `gemini` という実行ファイルはインストールされません。
 
 #### オプション B: Claude（コード理解に最適）
@@ -38,7 +38,7 @@ npm install -g @anthropic-ai/claude-code
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
-APIキーの取得: https://platform.claude.com/ (Note: https://console.anthropic.com/ may redirect here)
+APIキーの取得: <https://platform.claude.com/> (Note: <https://console.anthropic.com/> may redirect here)
 
 #### オプション C: Ollama（ローカル＆プライベート）
 
@@ -100,6 +100,7 @@ AI生成コミットメッセージを使用する典型的なワークフロー
 1. **変更を加える** - プロジェクト内でいつも通りファイルを編集
 
 2. **LazyGitを開く** - リポジトリで`lazygit`を実行
+
    ```bash
    cd your-project
    lazygit
@@ -176,18 +177,7 @@ export TIMEOUT_SECONDS=60
 
 AIに送信されるコンテキストの量を調整:
 
-`config/config.yml`（または `~/.config/lazygit/config.yml`）の `customCommands` 内の `command` を編集して `head -c` の値を変更します:
-
-```yaml
-# 小さいdiff（高速、コンテキスト少）
-command: "git diff --cached | head -c 8000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
-
-# 大きいdiff（低速、コンテキスト多）
-command: "git diff --cached | head -c 20000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
-
-# デフォルト（バランス型）
-command: "git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
-```
+デフォルトでは、UTF-8文字列の境界で文字化けを防ぐため、 `get-staged-diff.sh` と `ai-commit-generator.sh` の内部で12000文字に安全に切り詰められます。サイズを調整したい場合は、これら両方のスクリプト内にある `12000` の数値を編集してください。
 
 #### 異なるモデルの使用
 
@@ -231,6 +221,7 @@ export OLLAMA_MODEL="mixtral"      # 高品質
 #### Conventional Commitsタイプを適切に使用
 
 AIは以下のようなタイプを提案します:
+
 - `feat:` - 新機能
 - `fix:` - バグ修正
 - `docs:` - ドキュメント変更
@@ -242,6 +233,7 @@ AIは以下のようなタイプを提案します:
 #### 手動コミットと組み合わせる
 
 すべてのコミットでAIを使う必要はありません:
+
 - 好みに応じてLazyGitで`c`を使って手動コミット
 - AI提案が欲しいときは`Ctrl+A`を使用
 - ニーズに応じて使い分ける
@@ -249,6 +241,7 @@ AIは以下のようなタイプを提案します:
 ### キーボードショートカットリファレンス
 
 LazyGit Filesビューで:
+
 - `space` - ファイルをステージング/アンステージング
 - `a` - すべてのファイルをステージング
 - `Ctrl+A` - AIコミットメッセージを生成（カスタムコマンド）
@@ -256,6 +249,7 @@ LazyGit Filesビューで:
 - `Esc` - キャンセル/戻る
 
 AIメッセージメニューで:
+
 - `↑`/`↓` - メッセージ間を移動
 - `Enter` - 選択してコミット
 - `Esc` - キャンセルしてファイルビューに戻る
@@ -355,6 +349,7 @@ lazygit
 #### ヒント 1: 複数回試す
 
 最初のメッセージセットが良くない場合:
+
 - `Esc`を押してキャンセル
 - `Ctrl+A`を再度押して新しい提案を取得
 - AIは毎回異なるオプションを生成
@@ -362,6 +357,7 @@ lazygit
 #### ヒント 2: スコープを効果的に使用
 
 `feat(auth):`や`fix(db):`のようなスコープ付きメッセージを探す:
+
 - スコープはコンポーネント別にコミットを整理するのに役立つ
 - git履歴をより検索しやすくする
 - 大規模プロジェクトで特に有用
@@ -379,6 +375,7 @@ alias lga='cd $(git rev-parse --show-toplevel) && lazygit'
 #### ヒント 4: 学習に使用
 
 AI生成メッセージから学べること:
+
 - より良いコミットメッセージの書き方
 - Conventional Commits形式
 - 変更を簡潔に説明する方法
@@ -445,6 +442,7 @@ export OLLAMA_HOST="http://localhost:11434"  # オプション、デフォルト
 **短所**: ローカルリソース必要、クラウドAPIより遅い
 
 **推奨モデル**:
+
 - `mistral` - 速度と品質のバランスが良い
 - `codellama` - コード用に最適化
 - `llama2` - 汎用目的
@@ -471,6 +469,7 @@ export OLLAMA_HOST="http://localhost:11434"  # オプション、デフォルト
 **期待される結果**: すべてのテストが緑のチェックマークで合格すること。
 
 テストスイートが検証する内容:
+
 - ✅ diffからコミットまでの完全なワークフロー
 - ✅ 特殊文字の処理とシェルエスケープ
 - ✅ 空のステージング検出
@@ -518,7 +517,7 @@ echo "test change" | AI_BACKEND=mock lazygit/_scripts/lazygit-ai-commit/ai-commi
 echo -e "feat: test\nfix: another" | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 
 # 3. 完全なパイプラインをテスト
-git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 ## トラブルシューティング
@@ -530,17 +529,20 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: config/config.ymlのスクリプトパスが正しくない
 
 **解決策**:
+
 1. スクリプトをインストールした場所を確認: インストールディレクトリで`pwd`
 2. `~/.config/lazygit/config.yml`を編集してパスを絶対パスに更新:
+
    ```yaml
    customCommands:
      - key: '<c-a>'
-       command: "git diff --cached | head -c 12000 | /full/path/to/ai-commit-generator.sh | /full/path/to/parse-ai-output.sh"
+       command: "/full/path/to/get-staged-diff.sh | /full/path/to/ai-commit-generator.sh | /full/path/to/parse-ai-output.sh"
        context: 'files'
        loadingText: 'Generating commit messages with AI...'
        description: 'generate commit message with AI'
        subprocess: true
    ```
+
 3. スクリプトが実行可能であることを確認: `chmod +x *.sh`
 
 #### "command not found: gemini"または類似のエラー
@@ -548,6 +550,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: AI CLIツールがPATHにない（Claude/Ollamaの場合）またはGemini SDKがインストールされていない
 
 **解決策**:
+
 - Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
 - Claudeの場合: `npm install -g @anthropic-ai/claude-code` を実行し、npm globalのbinがPATHにあることを確認
 - インストールを確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
@@ -557,6 +560,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: 設定ファイルが読み込まれていないか、構文エラーがある
 
 **解決策**:
+
 1. 設定の場所を確認: `ls -la ~/.config/lazygit/config.yml`
 2. YAML構文エラーをチェック: `python3 -c "import yaml; yaml.safe_load(open('config/config.yml'))"`（要 `pip install pyyaml`。または `yq` を使用してください）
 3. LazyGitを完全に再起動（すべてのインスタンスを閉じる）
@@ -577,6 +581,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: AIバックエンドがエラーを返す
 
 **解決策**:
+
 - APIキーが正しく設定されているか確認: `echo $GEMINI_API_KEY`
 - AIツールがインストールされているか確認: `python3 -c "import google.generativeai"` (Gemini) または `claude --version` または `ollama list`
 - インターネット接続を確認（クラウドAIの場合）
@@ -590,6 +595,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: AIの応答に時間がかかりすぎる（デフォルト30秒超）
 
 **解決策**:
+
 - タイムアウトを増やす: `export TIMEOUT_SECONDS=60`（または~/.bashrcに追加）
 - diffサイズを減らすために一度にステージングするファイルを減らす
 - Ollamaの場合: より小さい/高速なモデルを使用: `export OLLAMA_MODEL="mistral:7b"`
@@ -602,6 +608,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 **問題**: 環境変数が設定されていない
 
 **解決策**:
+
 ```bash
 # 設定されているか確認
 echo $GEMINI_API_KEY
@@ -625,6 +632,7 @@ source ~/.bashrc
 **問題**: 生成されたメッセージに`**太字**`、`` `コード` ``、またはその他のmarkdownが含まれる
 
 **解決策**: 設定されたプロンプトではこれは起こらないはずです。もし起こった場合:
+
 1. スクリプトの最新バージョンを使用していることを確認
 2. `ai-commit-generator.sh`のプロンプトに"No markdown"指示が含まれているか確認
 3. 別のAIバックエンドを試す（Claudeは形式ルールに最も従う）
@@ -637,6 +645,7 @@ source ~/.bashrc
 **問題**: メッセージに`feat:`、`fix:`などの接頭辞がない
 
 **解決策**:
+
 1. `ai-commit-generator.sh`のプロンプトがConventional Commitsに言及しているか確認
 2. Claudeバックエンドを試す（形式に最も従う）
 3. Ollamaの場合: コード規約をよりよく理解する`codellama`モデルを使用
@@ -649,6 +658,7 @@ source ~/.bashrc
 **問題**: "update files"や"make changes"のようなメッセージ
 
 **解決策**:
+
 1. より具体的な変更をステージング（小さく焦点を絞ったコミット）
 2. より良いコード理解のためにClaudeバックエンドを試す
 3. Ollamaの場合: `mixtral`のようなより大きなモデルを使用
@@ -661,6 +671,7 @@ source ~/.bashrc
 **問題**: 引用符、バッククォート、または特殊文字を含むメッセージでコミットが失敗
 
 **解決策**: これはLazyGitの`| quote`フィルターによって自動的に処理されます。問題が続く場合:
+
 1. `config.yml`のcommandセクションに`{{.Form.SelectedMsg | quote}}`があることを確認
 2. LazyGitを最新バージョンに更新
 3. エスケープを手動でテスト: `printf %q "test 'message' with \"quotes\""`
@@ -672,6 +683,7 @@ source ~/.bashrc
 **問題**: コードを外部サーバーに送信したくない
 
 **解決策**:
+
 1. Ollamaバックエンドを使用（完全にローカル）: `export AI_BACKEND="ollama"`
 2. 生成前にdiffを確認（何がステージングされているか確認）
 3. `.gitignore`を使用して機密ファイルのステージングを防止
@@ -686,8 +698,9 @@ source ~/.bashrc
 **問題**: メッセージ生成に10秒以上かかる
 
 **解決策**:
+
 - Gemini/Claudeの場合: インターネット接続速度を確認
-- Ollamaの場合: 
+- Ollamaの場合:
   - より小さいモデルを使用: `export OLLAMA_MODEL="mistral:7b"`
   - 利用可能な場合はGPUアクセラレーションを有効化
   - Ollamaに割り当てるシステムリソースを増やす
@@ -698,6 +711,7 @@ source ~/.bashrc
 **問題**: LazyGitが応答しなくなる
 
 **解決策**:
+
 1. これは予想される動作 - LazyGitはコマンドの完了を待つ
 2. `loadingText`に"Generating commit messages with AI..."と表示されるはず
 3. 本当にフリーズする場合（ローディングテキストなし）、タイムアウト設定を確認
@@ -723,16 +737,17 @@ bash -x lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh < test-diff.tx
 
 ```bash
 # diff生成をテスト
-git diff --cached
+# diff生成をテスト
+lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh
 
 # AI生成をテスト
-git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
+lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # パースをテスト
 echo -e "feat: test\nfix: another" | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 
 # 完全なパイプラインをテスト
-git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 #### LazyGitログを確認
@@ -754,6 +769,7 @@ lazygit 2>&1 | tee lazygit-errors.log
    - [AI-BACKEND-GUIDE.md](AI-BACKEND-GUIDE.md) - バックエンド固有のヘルプ
    - [QUICKSTART.md](QUICKSTART.md) - クイックセットアップパス
 3. **AIバックエンドを独立してテスト**:
+
    ```bash
    # Geminiの場合
    python3 -c "import google.generativeai as genai; print('OK')"
@@ -764,6 +780,7 @@ lazygit 2>&1 | tee lazygit-errors.log
    # Ollamaの場合
    ollama list
    ```
+
 4. **環境変数を確認**: `env | grep -E 'AI_|GEMINI|ANTHROPIC|OLLAMA'`
 5. **スクリプトのパーミッションを確認**: `ls -l *.sh`（`-rwxr-xr-x`と表示されるはず）
 
@@ -803,11 +820,7 @@ AI_BACKEND=ollama lazygit
 
 ### サイズ制限
 
-大きなdiffはトークン制限を避けるために自動的に12KBに切り詰められます。`config.yml`で調整:
-
-```yaml
-git diff --cached | head -c 12000  # 12000を好みのサイズに変更
-```
+大きなdiffはトークン制限と文字化けを避けるために自動的に12KBに切り詰められます。調整するには `get-staged-diff.sh` と `ai-commit-generator.sh` 内部の数値を変更してください。
 
 ## セキュリティに関する考慮事項
 
@@ -864,6 +877,7 @@ MIT
 ## 貢献
 
 貢献を歓迎します！以下を確認してください:
+
 - すべてのテストが合格すること（`./lazygit/_tests/lazygit-ai-commit/test-complete-workflow.sh`）
 - Conventional Commits形式に従うこと
 - 新機能のドキュメントを更新すること
@@ -874,12 +888,14 @@ MIT
 プロパティベーステストを用いた仕様駆動開発手法に従って構築されました。
 
 **手法**:
+
 - EARSパターンによる要件駆動設計
 - 事前に定義された正確性プロパティ
 - 包括的なテストカバレッジ
 - ユーザーフィードバックによる反復的改善
 
 **アーキテクチャ**:
+
 - LazyGitカスタムコマンド統合
 - プラグ可能なAIバックエンドシステム
 - シェルベースのパイプラインアーキテクチャ

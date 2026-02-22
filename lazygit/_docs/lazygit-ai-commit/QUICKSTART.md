@@ -125,8 +125,9 @@ lazygit
 **問題**: config/config.ymlのスクリプトパスが間違っている
 
 **修正**: `~/.config/lazygit/config.yml`を編集して完全な絶対パスを使用:
+
 ```yaml
-git diff --cached | head -c 12000 | /home/username/dotfiles-git/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /home/username/dotfiles-git/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+/home/username/dotfiles-git/lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | /home/username/dotfiles-git/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /home/username/dotfiles-git/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 ### "GEMINI_API_KEY not set"
@@ -134,6 +135,7 @@ git diff --cached | head -c 12000 | /home/username/dotfiles-git/lazygit/_scripts
 **問題**: 環境変数が設定されていない
 
 **修正**:
+
 ```bash
 export GEMINI_API_KEY="your-key"
 export AI_BACKEND="gemini"
@@ -145,6 +147,7 @@ export AI_BACKEND="gemini"
 **問題**: バックエンドがインストールされていないか実行されていない
 
 **修正**:
+
 - Gemini: `pip install google-generativeai` (Python SDK)
 - Claude: `npm install -g @anthropic-ai/claude-code`
 - Ollama: `ollama serve`が実行中であることを確認
@@ -165,6 +168,7 @@ export AI_BACKEND="gemini"
 ## ヘルプを得る
 
 問題を診断するためにテストスイートを実行:
+
 ```bash
 ./lazygit/_tests/lazygit-ai-commit/test-ai-backend-integration.sh
 ```

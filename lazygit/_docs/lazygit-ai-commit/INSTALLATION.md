@@ -26,17 +26,20 @@
 #### オプション A: Gemini（推奨）
 
 1. Google Generative AI Pythonパッケージ（SDK）をインストール:
+
    ```bash
    pip install google-generativeai
    ```
+
    注記: これはPythonライブラリであり、 `gemini` という名前の実行ファイルはインストールされません。
 
 2. APIキーを取得:
-   - https://aistudio.google.com/app/apikey にアクセス
+   - <https://aistudio.google.com/app/apikey> にアクセス
    - "Create API Key"をクリック
    - キーをコピー
 
 3. 環境変数を設定:
+
    ```bash
    # ~/.bashrcまたは~/.zshrcに追加
    export GEMINI_API_KEY="your-api-key-here"
@@ -44,6 +47,7 @@
    ```
 
 4. シェルをリロード:
+
    ```bash
    source ~/.bashrc  # またはsource ~/.zshrc
    ```
@@ -51,16 +55,18 @@
 #### オプション B: Claude
 
 1. Claude CLIをインストール:
+
    ```bash
    npm install -g @anthropic-ai/claude-code
    ```
 
 2. APIキーを取得:
-   - https://console.anthropic.com/ にアクセス
+   - <https://console.anthropic.com/> にアクセス
    - アカウントを作成してクレジットを追加
    - APIキーを生成
 
 3. 環境変数を設定:
+
    ```bash
    # ~/.bashrcまたは~/.zshrcに追加
    export ANTHROPIC_API_KEY="your-api-key-here"
@@ -68,6 +74,7 @@
    ```
 
 4. シェルをリロード:
+
    ```bash
    source ~/.bashrc  # またはsource ~/.zshrc
    ```
@@ -75,11 +82,13 @@
 #### オプション C: Ollama（ローカル）
 
 1. Ollamaをインストール:
+
    ```bash
    curl -fsSL https://ollama.com/install.sh | sh
    ```
 
 2. モデルをダウンロード（1つ選択）:
+
    ```bash
    # Mistral（推奨 - バランスが良い）
    ollama pull mistral
@@ -92,13 +101,15 @@
    ```
 
 3. Ollamaサービスを起動:
+
    ```bash
    ollama serve
    ```
-   
+
    注意: システムサービスとして自動起動するように設定することをお勧めします。
 
 4. 環境変数を設定:
+
    ```bash
    # ~/.bashrcまたは~/.zshrcに追加
    export AI_BACKEND="ollama"
@@ -106,6 +117,7 @@
    ```
 
 5. シェルをリロード:
+
    ```bash
    source ~/.bashrc  # またはsource ~/.zshrc
    ```
@@ -113,6 +125,7 @@
 ### ステップ 3: スクリプトをインストール
 
 1. このリポジトリをシステム上の場所にクローンまたはダウンロード:
+
    ```bash
    cd ~/projects  # または好みの場所
    git clone <repository-url> dotfiles-git
@@ -120,6 +133,7 @@
    ```
 
 2. スクリプトを実行可能にする:
+
    ```bash
    chmod +x lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
    chmod +x lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
@@ -130,6 +144,7 @@
 ### ステップ 4: LazyGitを設定
 
 1. LazyGit設定ディレクトリを見つける:
+
    ```bash
    # Linux/macOS
    mkdir -p ~/.config/lazygit
@@ -139,18 +154,19 @@
    ```
 
 2. `config.yml`のスクリプトパスを更新:
-   
+
    `config/config.yml`を開き、スクリプトをインストールした場所を指すようにパスを更新:
-   
+
    ```yaml
    command: |
      # ... 既存の設定 ...
-     git diff --cached | /full/path/to/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+     /full/path/to/lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
    ```
-   
+
    `/full/path/to/`をリポジトリをクローンした実際のパスに置き換えます。
 
 3. 設定をコピーまたはマージ:
+
    ```bash
    # 既存の設定がない場合:
    cp config/config.yml ~/.config/lazygit/config.yml
@@ -163,6 +179,7 @@
 ### ステップ 5: インストールをテスト
 
 1. テストリポジトリを作成:
+
    ```bash
    mkdir ~/test-ai-commit
    cd ~/test-ai-commit
@@ -172,6 +189,7 @@
    ```
 
 2. LazyGitを開く:
+
    ```bash
    lazygit
    ```
@@ -208,6 +226,7 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 **問題**: AI CLIツールがPATHにない（Claude/Ollamaの場合）またはGemini SDKがインストールされていない
 
 **解決策**:
+
 - Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
 - Claudeの場合: `npm install -g @anthropic-ai/claude-code` を実行し、npm globalのbinがPATHにあることを確認
 - 確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
@@ -217,8 +236,10 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 **問題**: 環境変数が設定されていない
 
 **解決策**:
+
 1. 設定されているか確認: `echo $GEMINI_API_KEY`
 2. 空の場合、シェルプロファイルに追加:
+
    ```bash
    echo 'export GEMINI_API_KEY="your-key"' >> ~/.bashrc
    source ~/.bashrc
@@ -229,6 +250,7 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 **問題**: config.ymlのスクリプトパスが間違っている
 
 **解決策**:
+
 1. スクリプトをインストールした場所を確認: `pwd`
 2. config.ymlを完全な絶対パスで更新
 3. スクリプトが実行可能であることを確認: `ls -l *.sh`
@@ -238,6 +260,7 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 **問題**: Ollamaサービスが実行されていない
 
 **解決策**:
+
 ```bash
 # 別のターミナルでOllamaを起動
 ollama serve
@@ -252,6 +275,7 @@ sudo systemctl start ollama
 **問題**: 設定ファイルが読み込まれていないか構文エラー
 
 **解決策**:
+
 1. 設定の場所を確認: `ls -la ~/.config/lazygit/config.yml`
 2. YAML構文を検証: `python3 -c "import yaml, os; yaml.safe_load(open(os.path.expanduser('~/.config/lazygit/config.yml')))"`
 3. LazyGitを完全に再起動
@@ -269,6 +293,7 @@ sudo systemctl start ollama
 
 1. README.mdの[トラブルシューティング](README.md#troubleshooting)セクションを確認
 2. AIバックエンドが独立して動作することを確認:
+
    ```bash
    # Geminiの場合
    python3 -c "import google.generativeai as genai; print('OK')"
@@ -279,10 +304,13 @@ sudo systemctl start ollama
    # Ollamaの場合
    ollama list
    ```
+
 3. スクリプトを個別にテスト:
+
    ```bash
    echo "test diff" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
    ```
+
 4. LazyGitログでエラーを確認
 
 ## アンインストール
@@ -293,6 +321,7 @@ AIコミットジェネレーターを削除するには:
 2. クローンしたリポジトリを削除
 3. シェルプロファイルから環境変数を削除
 4. （オプション）AI CLIツールをアンインストール:
+
    ```bash
    pip uninstall google-generativeai
    npm uninstall -g @anthropic-ai/claude-code

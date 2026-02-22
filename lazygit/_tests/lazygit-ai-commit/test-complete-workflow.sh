@@ -69,7 +69,7 @@ git add feature.js
 
 # Generate commit messages
 test_info "Generating commit messages with AI..."
-MESSAGES=$(git diff --cached | head -c 12000 | \
+MESSAGES=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | \
     AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | \
     "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1)
 
@@ -152,7 +152,7 @@ echo "-------------------------------------"
 git reset HEAD --quiet
 
 # Try to generate messages with empty staging
-if git diff --cached | head -c 12000 | \
+if "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | \
     AI_TOOL="$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/mock-ai-tool.sh" "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | \
     grep -q "No diff input provided"; then
     test_pass "Empty staging area detected"
@@ -173,7 +173,7 @@ dd if=/dev/zero of=large.bin bs=1024 count=20 2>/dev/null
 git add large.bin
 
 # Check that diff is truncated to 12KB
-DIFF_SIZE=$(git diff --cached | head -c 12000 | wc -c)
+DIFF_SIZE=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | wc -c)
 if [ "$DIFF_SIZE" -le 12000 ]; then
     test_pass "Large diff truncated correctly (${DIFF_SIZE} bytes)"
 else
@@ -197,7 +197,7 @@ echo "test" > test.txt
 git add test.txt
 
 # Generate messages and check format
-MESSAGES=$(git diff --cached | head -c 12000 | \
+MESSAGES=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | \
     AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | \
     "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1)
 

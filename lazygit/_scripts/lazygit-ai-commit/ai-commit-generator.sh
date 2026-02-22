@@ -130,7 +130,7 @@ except Exception as e:
         ;;
     claude)
         # Claude API call via official CLI
-        AI_COMMAND="claude --model $CLAUDE_MODEL --no-stream"
+        AI_COMMAND="claude --model $CLAUDE_MODEL --output-format json"
         ;;
     ollama)
         # Ollama local API call

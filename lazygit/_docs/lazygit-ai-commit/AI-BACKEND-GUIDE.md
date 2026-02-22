@@ -29,6 +29,7 @@ export OLLAMA_HOST="http://localhost:11434"  # Ollama server
 **Best for**: Most users, quick setup, free tier
 
 **Setup**:
+
 ```bash
 pip install google-generativeai
 export GEMINI_API_KEY="your-key"
@@ -36,26 +37,31 @@ export AI_BACKEND="gemini"
 ```
 
 **Available Models**:
+
 - `gemini-1.5-flash` (default) - Fast, good quality, recommended
 - `gemini-1.5-pro` - Higher quality, slower, more expensive
 - `gemini-1.0-pro` - Older model, still capable
 
 **Pricing** (as of 2024):
+
 - Free tier: 15 requests per minute
 - Paid: $0.00025 per 1K characters (very affordable)
 
 **Pros**:
+
 - Fast response times (1-3 seconds)
 - Generous free tier
 - Good quality commit messages
 - Easy to set up
 
 **Cons**:
+
 - Requires internet connection
 - Code diffs sent to Google servers
 - Rate limits on free tier
 
 **Configuration Example**:
+
 ```bash
 # ~/.bashrc or ~/.zshrc
 export AI_BACKEND="gemini"
@@ -69,6 +75,7 @@ export TIMEOUT_SECONDS=30
 **Best for**: Professional use, highest quality output
 
 **Setup**:
+
 ```bash
 npm install -g @anthropic-ai/claude-code
 export ANTHROPIC_API_KEY="your-key"
@@ -76,28 +83,33 @@ export AI_BACKEND="claude"
 ```
 
 **Available Models**:
+
 - `claude-3-5-haiku-20241022` (default) - Fast, affordable, recommended
 - `claude-3-5-sonnet-20241022` - Higher quality, more expensive
 - `claude-3-opus-20240229` - Highest quality, most expensive
 
 **Pricing** (as of 2024):
+
 - Haiku: $0.25 per million input tokens
 - Sonnet: $3 per million input tokens
 - Opus: $15 per million input tokens
 
 **Pros**:
+
 - Excellent code understanding
 - High-quality, contextual messages
 - Good at following Conventional Commits format
 - Reliable output format
 
 **Cons**:
+
 - Requires paid API (no free tier)
 - Requires internet connection
 - Code diffs sent to Anthropic servers
 - More expensive than Gemini
 
 **Configuration Example**:
+
 ```bash
 # ~/.bashrc or ~/.zshrc
 export AI_BACKEND="claude"
@@ -111,6 +123,7 @@ export TIMEOUT_SECONDS=30
 **Best for**: Privacy-sensitive projects, offline work, no API costs
 
 **Setup**:
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull mistral
@@ -119,6 +132,7 @@ export AI_BACKEND="ollama"
 ```
 
 **Available Models**:
+
 - `mistral` (default) - 7B params, good balance of speed/quality
 - `codellama` - 7B params, optimized for code
 - `llama2` - 7B params, general purpose
@@ -126,9 +140,11 @@ export AI_BACKEND="ollama"
 - `deepseek-coder` - 6.7B params, code-focused
 
 **Pricing**:
+
 - Free! Runs completely locally
 
 **Pros**:
+
 - Complete privacy - nothing leaves your machine
 - No API costs
 - Works offline
@@ -136,12 +152,14 @@ export AI_BACKEND="ollama"
 - Customizable models
 
 **Cons**:
+
 - Slower than cloud APIs (5-15 seconds)
 - Requires local compute resources (4-8GB RAM)
 - Quality varies by model
 - Requires Ollama service running
 
 **Configuration Example**:
+
 ```bash
 # ~/.bashrc or ~/.zshrc
 export AI_BACKEND="ollama"
@@ -151,6 +169,7 @@ export TIMEOUT_SECONDS=60  # Longer timeout for local processing
 ```
 
 **Model Recommendations**:
+
 ```bash
 # For speed (2-5 seconds)
 ollama pull mistral:7b-instruct
@@ -167,18 +186,21 @@ ollama pull mixtral:8x7b-instruct
 **Best for**: Testing, development, CI/CD
 
 **Setup**:
+
 ```bash
 export AI_BACKEND="mock"
 # No API key needed
 ```
 
 **Behavior**:
+
 - Generates simple heuristic-based messages
 - Analyzes diff for keywords (test, doc, config, etc.)
 - Always returns 5+ messages
 - No external dependencies
 
 **Use Cases**:
+
 - Testing the integration without API keys
 - CI/CD pipelines
 - Development and debugging
@@ -211,6 +233,7 @@ export OLLAMA_MODEL="mistral"
 ```
 
 Then reload:
+
 ```bash
 source ~/.bashrc  # or source ~/.zshrc
 ```
@@ -243,34 +266,26 @@ export TIMEOUT_SECONDS=120
 
 ### Diff Size Limits
 
-Large diffs can cause timeouts or poor quality. Adjust in `config/config.yml`:
-
-```yaml
-# Default: 12KB
-git diff --cached | head -c 12000
-
-# For faster processing
-git diff --cached | head -c 8000
-
-# For more context
-git diff --cached | head -c 20000
-```
+Large diffs can cause timeouts or poor quality. By default, `get-staged-diff.sh` and `ai-commit-generator.sh` safely truncate input to 12000 characters at UTF-8 boundaries. To adjust this limit, modify the `12000` value directly inside both of these scripts.
 
 ### Model Selection
 
 Choose models based on your needs:
 
 **Speed Priority**:
+
 - Gemini: `gemini-1.5-flash`
 - Claude: `claude-3-5-haiku-20241022`
 - Ollama: `mistral:7b-instruct`
 
 **Quality Priority**:
+
 - Gemini: `gemini-1.5-pro`
 - Claude: `claude-3-5-sonnet-20241022`
 - Ollama: `mixtral:8x7b-instruct`
 
 **Cost Priority**:
+
 - Ollama: Any model (free)
 - Gemini: `gemini-1.5-flash` (cheapest cloud)
 - Claude: `claude-3-5-haiku-20241022` (affordable)
@@ -280,12 +295,14 @@ Choose models based on your needs:
 ### API Key Management
 
 **DO**:
+
 - Store keys in environment variables
 - Use a secrets manager (e.g., `pass`, `1password-cli`)
 - Add `.env` files to `.gitignore`
 - Rotate keys regularly
 
 **DON'T**:
+
 - Commit keys to version control
 - Share keys in chat/email
 - Use the same key across multiple projects
@@ -294,12 +311,14 @@ Choose models based on your needs:
 ### Code Privacy
 
 **Cloud AI (Gemini/Claude)**:
+
 - Your code diffs are sent to external servers
 - Review diffs before generating if sensitive
 - Consider using Ollama for proprietary code
 - Check your organization's AI usage policy
 
 **Local AI (Ollama)**:
+
 - Everything stays on your machine
 - No data sent externally
 - Safe for sensitive/proprietary code
@@ -308,6 +327,7 @@ Choose models based on your needs:
 ### Network Security
 
 For cloud backends, ensure:
+
 - HTTPS connections (handled by CLI tools)
 - Firewall allows outbound HTTPS
 - Corporate proxy configured if needed
@@ -317,6 +337,7 @@ For cloud backends, ensure:
 ### Gemini Issues
 
 **"Invalid API key"**:
+
 ```bash
 # Verify key is set
 echo $GEMINI_API_KEY
@@ -331,6 +352,7 @@ print('API key is valid')
 ```
 
 **"Rate limit exceeded"**:
+
 - Wait a minute and retry
 - Upgrade to paid tier
 - Switch to Ollama temporarily
@@ -338,6 +360,7 @@ print('API key is valid')
 ### Claude Issues
 
 **"Authentication failed"**:
+
 ```bash
 # Verify key is set
 echo $ANTHROPIC_API_KEY
@@ -347,12 +370,14 @@ claude --version
 ```
 
 **"Insufficient credits"**:
-- Add credits at https://console.anthropic.com/
+
+- Add credits at <https://console.anthropic.com/>
 - Switch to Gemini or Ollama
 
 ### Ollama Issues
 
 **"Connection refused"**:
+
 ```bash
 # Check if Ollama is running
 curl http://localhost:11434/api/tags
@@ -362,6 +387,7 @@ ollama serve
 ```
 
 **"Model not found"**:
+
 ```bash
 # List installed models
 ollama list
@@ -371,6 +397,7 @@ ollama pull mistral
 ```
 
 **"Too slow"**:
+
 - Use a smaller model: `export OLLAMA_MODEL="mistral:7b"`
 - Increase timeout: `export TIMEOUT_SECONDS=120`
 - Check system resources: `htop`
@@ -425,13 +452,16 @@ esac
 Assuming 50 commits per day, 500 bytes average diff:
 
 **Gemini**:
+
 - Free tier: Unlimited (within rate limits)
 - Paid: ~$0.01 per month
 
 **Claude (Haiku)**:
+
 - ~$0.25 per month
 
 **Ollama**:
+
 - $0 (electricity costs only)
 
 ### Heavy Usage
@@ -439,13 +469,16 @@ Assuming 50 commits per day, 500 bytes average diff:
 Assuming 200 commits per day, 2KB average diff:
 
 **Gemini**:
+
 - Free tier: May hit rate limits
 - Paid: ~$0.10 per month
 
 **Claude (Haiku)**:
+
 - ~$1.50 per month
 
 **Ollama**:
+
 - $0 (electricity costs only)
 
 ## Recommendations
@@ -462,7 +495,7 @@ Assuming 200 commits per day, 2KB average diff:
 - **Enterprise**: Ollama (privacy, compliance)
 - **Quality-focused**: Claude (best output)
 
-### For Open Source Projects
+### For Open-Source Projects
 
 - **Public repos**: Any backend (code is public anyway)
 - **Private repos**: Ollama (no data sharing)
