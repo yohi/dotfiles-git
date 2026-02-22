@@ -31,9 +31,9 @@ All changes MUST comply with the central layout rules. Please refer to the centr
 
 ## THIS COMPONENT — SPECIAL NOTES
 
-- `_bin/` scripts are added to `$PATH` by dotfiles-zsh (loose coupling per SPEC.md).
-- `_scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
-- `_tests/` use shell-based test scripts — run with `bash _tests/lazygit-ai-commit/test-*.sh`.
+- `lazygit/_bin/` scripts are added to `$PATH` by dotfiles-zsh dynamically.
+- `lazygit/_scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
+- `lazygit/_tests/` use shell-based test scripts — run with `bash lazygit/_tests/lazygit-ai-commit/test-*.sh`.
 - Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make link`).
 
 ## CODE STYLE
