@@ -7,15 +7,16 @@
 
 ```text
 dotfiles-git/
-├── bin/                        # Public commands (added to $PATH by dotfiles-zsh)
+├── _bin/                       # Public commands (added to $PATH by dotfiles-zsh)
 │   ├── lg-gemini-commit        # Lazygit AI commit generator (Gemini)
 │   └── lg-gemini-pr            # Lazygit AI PR description generator
-├── scripts/                    # Internal helpers
+├── _scripts/                   # Internal helpers
 │   └── lazygit-ai-commit/      # AI commit pipeline scripts
-├── docs/                       # Documentation
+├── _docs/                      # Documentation
 │   └── lazygit-ai-commit/      # AI commit feature docs
-├── tests/                      # Test scripts
+├── _tests/                     # Test scripts
 │   └── lazygit-ai-commit/      # AI commit tests
+├── lazygit/                    # [Link Target] Lazygit configuration → ~/.config/lazygit
 ├── examples/                   # Configuration examples
 │   └── lazygit-config-snippet.yml
 └── archive/                    # Historical implementation logs
@@ -24,14 +25,14 @@ dotfiles-git/
 ## COMPONENT LAYOUT CONVENTION
 
 This repository is part of the **dotfiles polyrepo** orchestrated by `dotfiles-core`.
-All changes MUST comply with the central layout rules. Please refer to [`dotfiles-core/docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) for the full, authoritative rules and constraints.
+All changes MUST comply with the central layout rules. Please refer to the central [ARCHITECTURE.md](https://raw.githubusercontent.com/yohi/dotfiles-core/refs/heads/master/docs/ARCHITECTURE.md) for the full, authoritative rules and constraints.
 
 ## THIS COMPONENT — SPECIAL NOTES
 
-- `bin/` scripts are added to `$PATH` by dotfiles-zsh (loose coupling per SPEC.md).
-- `scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
-- `tests/` use shell-based test scripts — run with `bash tests/lazygit-ai-commit/test-*.sh`.
-- Git global config files (`.gitconfig` etc.) should be Stow targets at repo root.
+- `_bin/` scripts are added to `$PATH` by dotfiles-zsh (loose coupling per SPEC.md).
+- `_scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
+- `_tests/` use shell-based test scripts — run with `bash _tests/lazygit-ai-commit/test-*.sh`.
+- Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make link`).
 
 ## CODE STYLE
 
