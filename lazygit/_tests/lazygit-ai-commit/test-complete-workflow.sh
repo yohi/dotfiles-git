@@ -265,19 +265,20 @@ echo "feat: too slow"
 EOF
 chmod +x "$SLOW_MOCK"
 
-# Temporarily replace mock-ai-tool.sh
+# Temporarily replace mock-ai-tool.sh securely using a trap
 ORIGINAL_MOCK="$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/mock-ai-tool.sh"
 BACKUP_MOCK="$SCRIPT_DIR/mock-ai-tool.sh.backup"
-mv "$ORIGINAL_MOCK" "$BACKUP_MOCK"
-mv "$SLOW_MOCK" "$ORIGINAL_MOCK"
+cp "$ORIGINAL_MOCK" "$BACKUP_MOCK"
+trap 'mv "$BACKUP_MOCK" "$ORIGINAL_MOCK" 2>/dev/null; rm -f "$SLOW_MOCK"' EXIT
+cp "$SLOW_MOCK" "$ORIGINAL_MOCK"
 
 # Test with short timeout
 TIMEOUT_OUTPUT=$(echo "test" | TIMEOUT_SECONDS=2 AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 || true)
 
 # Restore original mock
-mv "$ORIGINAL_MOCK" "$SLOW_MOCK"
 mv "$BACKUP_MOCK" "$ORIGINAL_MOCK"
-rm "$SLOW_MOCK"
+trap - EXIT
+rm -f "$SLOW_MOCK"
 
 if echo "$TIMEOUT_OUTPUT" | grep -qE "timed out|Timeout"; then
     test_pass "Timeout handling works"
@@ -304,19 +305,20 @@ exit 1
 EOF
 chmod +x "$FAIL_MOCK"
 
-# Temporarily replace mock-ai-tool.sh
+# Temporarily replace mock-ai-tool.sh securely using a trap
 ORIGINAL_MOCK="$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/mock-ai-tool.sh"
 BACKUP_MOCK="$SCRIPT_DIR/mock-ai-tool.sh.backup"
-mv "$ORIGINAL_MOCK" "$BACKUP_MOCK"
-mv "$FAIL_MOCK" "$ORIGINAL_MOCK"
+cp "$ORIGINAL_MOCK" "$BACKUP_MOCK"
+trap 'mv "$BACKUP_MOCK" "$ORIGINAL_MOCK" 2>/dev/null; rm -f "$FAIL_MOCK"' EXIT
+cp "$FAIL_MOCK" "$ORIGINAL_MOCK"
 
 # Test error handling
 ERROR_OUTPUT=$(echo "test" | AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 || true)
 
 # Restore original mock
-mv "$ORIGINAL_MOCK" "$FAIL_MOCK"
 mv "$BACKUP_MOCK" "$ORIGINAL_MOCK"
-rm "$FAIL_MOCK"
+trap - EXIT
+rm -f "$FAIL_MOCK"
 
 if echo "$ERROR_OUTPUT" | grep -q "AI tool failed"; then
     test_pass "Error recovery works"
