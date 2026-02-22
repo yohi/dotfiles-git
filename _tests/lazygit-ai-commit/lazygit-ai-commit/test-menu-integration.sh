@@ -22,7 +22,7 @@ echo "test content" > "$TEST_DIR/test.txt"
 git -C "$TEST_DIR" add test.txt
 
 # Run the complete pipeline (simulating LazyGit's command)
-RESULT=$(git -C "$TEST_DIR" diff --cached | head -c 12000 | ../../scripts/lazygit-ai-commit/ai-commit-generator.sh | ../../scripts/lazygit-ai-commit/parse-ai-output.sh)
+RESULT=$(git -C "$TEST_DIR" diff --cached | head -c 12000 | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh | ../../_scripts/lazygit-ai-commit/parse-ai-output.sh)
 
 # Verify output
 if [ -z "$RESULT" ]; then

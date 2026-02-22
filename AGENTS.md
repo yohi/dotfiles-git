@@ -8,17 +8,19 @@
 ```text
 dotfiles-git/
 ├── _bin/                       # Public commands (added to $PATH by dotfiles-zsh)
-│   ├── lg-gemini-commit        # Lazygit AI commit generator (Gemini)
-│   └── lg-gemini-pr            # Lazygit AI PR description generator
-├── _scripts/                   # Internal helpers
-│   └── lazygit-ai-commit/      # AI commit pipeline scripts
-├── _docs/                      # Documentation
-│   └── lazygit-ai-commit/      # AI commit feature docs
-├── _tests/                     # Test scripts
-│   └── lazygit-ai-commit/      # AI commit tests
 ├── lazygit/                    # [Link Target] Lazygit configuration → ~/.config/lazygit
-├── examples/                   # Configuration examples
-│   └── lazygit-config-snippet.yml
+│   ├── config.yml              # Main configuration file
+│   ├── _bin/                   # Public commands for lazygit
+│   │   ├── lg-gemini-commit    # Lazygit AI commit generator (Gemini)
+│   │   └── lg-gemini-pr        # Lazygit AI PR description generator
+│   ├── _scripts/               # Internal helpers
+│   │   └── lazygit-ai-commit/  # AI commit pipeline scripts
+│   ├── _docs/                  # Documentation
+│   │   └── lazygit-ai-commit/  # AI commit feature docs
+│   ├── _tests/                 # Test scripts
+│   │   └── lazygit-ai-commit/  # AI commit tests
+│   └── examples/               # Configuration examples
+│       └── lazygit-config-snippet.yml
 └── archive/                    # Historical implementation logs
 ```
 

@@ -117,10 +117,10 @@ customCommands:
           # 4. Parse output (parse-ai-output.sh) - extracts individual messages
           #
           # NOTE: Update these paths to point to where you installed the scripts!
-          # Example: /home/username/lazygit-ai-commit/ai-commit-generator.sh
+          # Example: /home/username/lazygit-ai-commit/_scripts/ai-commit-generator.sh
           # ========================================================================
           
-          git diff --cached | head -c 12000 | scripts/lazygit-ai-commit/ai-commit-generator.sh | scripts/lazygit-ai-commit/parse-ai-output.sh
+          git diff --cached | head -c 12000 | _scripts/lazygit-ai-commit/ai-commit-generator.sh | _scripts/lazygit-ai-commit/parse-ai-output.sh
         
         # ========================================================================
         # Output Parsing Configuration

@@ -5,8 +5,8 @@ include _mk/git.mk
 .PHONY: link
 link:
 	@echo "==> Linking dotfiles-git"
-	mkdir -p $(HOME)/.config
-	ln -sfn $(REPO_ROOT)/lazygit $(HOME)/.config/lazygit
+	mkdir -p $(HOME)/.config/lazygit
+	ln -sfn $(REPO_ROOT)/lazygit/config.yml $(HOME)/.config/lazygit/config.yml
 
 .PHONY: setup
 setup:
