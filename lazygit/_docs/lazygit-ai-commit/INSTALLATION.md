@@ -115,8 +115,8 @@
 1. このリポジトリをシステム上の場所にクローンまたはダウンロード:
    ```bash
    cd ~/projects  # または好みの場所
-   git clone <repository-url> lazygit-ai-commit
-   cd lazygit-ai-commit
+   git clone <repository-url> dotfiles-git
+   cd dotfiles-git
    ```
 
 2. スクリプトを実行可能にする:

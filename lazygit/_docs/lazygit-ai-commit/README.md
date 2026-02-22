@@ -38,7 +38,7 @@ npm install -g @anthropic-ai/claude-cli
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
-APIキーの取得: https://console.anthropic.com/
+APIキーの取得: https://platform.claude.com/ (Note: https://console.anthropic.com/ may redirect here)
 
 #### オプション C: Ollama（ローカル＆プライベート）
 
@@ -457,15 +457,15 @@ export OLLAMA_HOST="http://localhost:11434"  # オプション、デフォルト
 
 ```bash
 # すべての統合テストを実行（23テスト）
-./test-complete-workflow.sh
+./lazygit/_tests/lazygit-ai-commit/test-complete-workflow.sh
 
 # エラーシナリオテストを実行
-./test-all-error-scenarios.sh
+./lazygit/_tests/lazygit-ai-commit/test-all-error-scenarios.sh
 
 # 特定のコンポーネントをテスト
-./test-lazygit-commit-integration.sh
-./test-regex-parser.sh
-./test-error-handling.sh
+./lazygit/_tests/lazygit-ai-commit/test-lazygit-commit-integration.sh
+./lazygit/_tests/lazygit-ai-commit/test-regex-parser.sh
+./lazygit/_tests/lazygit-ai-commit/test-error-handling.sh
 ```
 
 **期待される結果**: すべてのテストが緑のチェックマークで合格すること。
@@ -527,7 +527,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 #### Ctrl+Aを押したときに"No such file or directory"
 
-**問題**: config.ymlのスクリプトパスが正しくない
+**問題**: config/config.ymlのスクリプトパスが正しくない
 
 **解決策**:
 1. スクリプトをインストールした場所を確認: インストールディレクトリで`pwd`
@@ -558,7 +558,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 **解決策**:
 1. 設定の場所を確認: `ls -la ~/.config/lazygit/config.yml`
-2. YAML構文エラーをチェック: `python3 -c "import yaml; yaml.safe_load(open('config.yml'))"`（要 `pip install pyyaml`。または `yq` を使用してください）
+2. YAML構文エラーをチェック: `python3 -c "import yaml; yaml.safe_load(open('config/config.yml'))"`（要 `pip install pyyaml`。または `yq` を使用してください）
 3. LazyGitを完全に再起動（すべてのインスタンスを閉じる）
 4. LazyGitのバージョンを確認: `lazygit --version`（最新であることを確認）
 
@@ -748,7 +748,7 @@ lazygit 2>&1 | tee lazygit-errors.log
 
 まだ問題が解決しない場合:
 
-1. **テストスイートを実行**: `./test-complete-workflow.sh` - 特定の問題を識別します
+1. **テストスイートを実行**: `./lazygit/_tests/lazygit-ai-commit/test-complete-workflow.sh` - 特定の問題を識別します
 2. **ドキュメントを確認**:
    - [INSTALLATION.md](INSTALLATION.md) - 詳細なセットアップ手順
    - [AI-BACKEND-GUIDE.md](AI-BACKEND-GUIDE.md) - バックエンド固有のヘルプ
@@ -864,7 +864,7 @@ MIT
 ## 貢献
 
 貢献を歓迎します！以下を確認してください:
-- すべてのテストが合格すること（`./test-complete-workflow.sh`）
+- すべてのテストが合格すること（`./lazygit/_tests/lazygit-ai-commit/test-complete-workflow.sh`）
 - Conventional Commits形式に従うこと
 - 新機能のドキュメントを更新すること
 - 新機能のテストを追加すること
