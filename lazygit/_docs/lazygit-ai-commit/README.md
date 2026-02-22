@@ -26,6 +26,7 @@ export GEMINI_API_KEY="your-api-key-here"
 ```
 
 APIキーの取得: https://aistudio.google.com/app/apikey
+注記: 2025年9–10月に既存キーが管理UIから消える問題が発生していましたが、現在は解消されています。もしキーが見当たらない場合は「Google Cloud Consoleの認証情報ページ」を確認するか、「プロジェクトの再インポート」を試してください。
 
 #### オプション B: Claude（コード理解に最適）
 
@@ -42,7 +43,7 @@ APIキーの取得: https://console.anthropic.com/
 #### オプション C: Ollama（ローカル＆プライベート）
 
 ```bash
-# Ollamaをインストール
+# Ollamaをインストール（現在のインストールスクリプトは問題なく動作します）
 curl -fsSL https://ollama.com/install.sh | sh
 
 # モデルをダウンロード（例: mistral）
@@ -175,17 +176,17 @@ export TIMEOUT_SECONDS=60
 
 AIに送信されるコンテキストの量を調整:
 
-`config/config.yml`を編集して`head -c`の値を変更:
+`config/config.yml`（または `~/.config/lazygit/config.yml`）の `customCommands` 内の `command` を編集して `head -c` の値を変更します:
 
 ```yaml
 # 小さいdiff（高速、コンテキスト少）
-git diff --cached | head -c 8000 | ...
+command: "git diff --cached | head -c 8000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
 
 # 大きいdiff（低速、コンテキスト多）
-git diff --cached | head -c 20000 | ...
+command: "git diff --cached | head -c 20000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
 
 # デフォルト（バランス型）
-git diff --cached | head -c 12000 | ...
+command: "git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | ..."
 ```
 
 #### 異なるモデルの使用
@@ -452,7 +453,7 @@ export OLLAMA_HOST="http://localhost:11434"  # オプション、デフォルト
 
 ### 完全なテストスイートを実行
 
-インストールが正しく動作していることを確認:
+インストールが正しく動作していることを確認（**リポジトリのルートから実行してください**）:
 
 ```bash
 # すべての統合テストを実行（23テスト）
@@ -507,7 +508,7 @@ git log -1
 
 ### クイック検証
 
-各コンポーネントが動作することを確認:
+各コンポーネントが動作することを確認（**リポジトリのルートから実行してください**）:
 
 ```bash
 # 1. AI生成をテスト
@@ -532,7 +533,13 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 1. スクリプトをインストールした場所を確認: インストールディレクトリで`pwd`
 2. `~/.config/lazygit/config.yml`を編集してパスを絶対パスに更新:
    ```yaml
-   git diff --cached | head -c 12000 | /full/path/to/ai-commit-generator.sh | /full/path/to/parse-ai-output.sh
+   customCommands:
+     - key: '<c-a>'
+       command: "git diff --cached | head -c 12000 | /full/path/to/ai-commit-generator.sh | /full/path/to/parse-ai-output.sh"
+       context: 'files'
+       loadingText: 'Generating commit messages with AI...'
+       description: 'generate commit message with AI'
+       subprocess: true
    ```
 3. スクリプトが実行可能であることを確認: `chmod +x *.sh`
 
@@ -551,7 +558,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 **解決策**:
 1. 設定の場所を確認: `ls -la ~/.config/lazygit/config.yml`
-2. YAML構文エラーをチェック: `python3 -c "import yaml; yaml.safe_load(open('config.yml'))"`
+2. YAML構文エラーをチェック: `python3 -c "import yaml; yaml.safe_load(open('config.yml'))"`（要 `pip install pyyaml`。または `yq` を使用してください）
 3. LazyGitを完全に再起動（すべてのインスタンスを閉じる）
 4. LazyGitのバージョンを確認: `lazygit --version`（最新であることを確認）
 

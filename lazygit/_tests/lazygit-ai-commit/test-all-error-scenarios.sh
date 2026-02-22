@@ -19,7 +19,7 @@ test_scenario() {
     shift 2
     
     echo "Testing: $name"
-    if "$@" 2>&1 | grep -q "$expected_error"; then
+    if "$@" 2>&1 | grep -Fq -- "$expected_error"; then
         echo "✓ PASS"
         PASS_COUNT=$((PASS_COUNT + 1))
     else
