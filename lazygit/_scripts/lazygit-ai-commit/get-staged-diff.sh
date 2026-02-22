@@ -18,8 +18,8 @@ if git diff --cached --quiet; then
     exit 1
 fi
 
-# Get the staged diff and limit to 12KB (12000 bytes)
-# This prevents exceeding AI token limits
-git diff --cached | head -c 12000
+# Get the staged diff and limit to 12000 characters (UTF-8 safe)
+# This prevents exceeding AI token limits and avoids splitting multibyte characters
+git diff --cached | python3 -c "import sys; sys.stdout.write(sys.stdin.read(12000))"
 
 exit 0

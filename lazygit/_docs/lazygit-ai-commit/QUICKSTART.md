@@ -146,7 +146,7 @@ export AI_BACKEND="gemini"
 
 **修正**:
 - Gemini: `pip install google-generativeai` (Python SDK)
-- Claude: `npm install -g @anthropic-ai/claude-cli`
+- Claude: `npm install -g @anthropic-ai/claude-code`
 - Ollama: `ollama serve`が実行中であることを確認
 
 ### "No staged changes"

@@ -70,7 +70,7 @@ export TIMEOUT_SECONDS=30
 
 **Setup**:
 ```bash
-npm install -g @anthropic-ai/claude-cli
+npm install -g @anthropic-ai/claude-code
 export ANTHROPIC_API_KEY="your-key"
 export AI_BACKEND="claude"
 ```

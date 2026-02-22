@@ -32,7 +32,7 @@ APIキーの取得: https://aistudio.google.com/app/apikey
 
 ```bash
 # Claude CLIをインストール
-npm install -g @anthropic-ai/claude-cli
+npm install -g @anthropic-ai/claude-code
 
 # APIキーを設定
 export ANTHROPIC_API_KEY="your-api-key-here"
@@ -549,7 +549,7 @@ git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | 
 
 **解決策**:
 - Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
-- Claudeの場合: `npm install -g @anthropic-ai/claude-cli` を実行し、npm globalのbinがPATHにあることを確認
+- Claudeの場合: `npm install -g @anthropic-ai/claude-code` を実行し、npm globalのbinがPATHにあることを確認
 - インストールを確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
 
 #### LazyGitがCtrl+Aオプションを表示しない

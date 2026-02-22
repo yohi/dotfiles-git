@@ -52,7 +52,7 @@
 
 1. Claude CLIをインストール:
    ```bash
-   npm install -g @anthropic-ai/claude-cli
+   npm install -g @anthropic-ai/claude-code
    ```
 
 2. APIキーを取得:
@@ -145,7 +145,7 @@
    ```yaml
    command: |
      # ... 既存の設定 ...
-     git diff --cached | head -c 12000 | /full/path/to/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+     git diff --cached | /full/path/to/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
    ```
    
    `/full/path/to/`をリポジトリをクローンした実際のパスに置き換えます。
@@ -209,7 +209,7 @@ echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 **解決策**:
 - Geminiの場合: `pip install google-generativeai` を実行し、Pythonから読み込めるか確認: `python3 -c "import google.generativeai"`
-- Claudeの場合: `npm install -g @anthropic-ai/claude-cli` を実行し、npm globalのbinがPATHにあることを確認
+- Claudeの場合: `npm install -g @anthropic-ai/claude-code` を実行し、npm globalのbinがPATHにあることを確認
 - 確認: `python3 -c "import google.generativeai"` (Gemini) または `which claude` または `which ollama`
 
 ### "GEMINI_API_KEY not set"エラー
@@ -253,7 +253,7 @@ sudo systemctl start ollama
 
 **解決策**:
 1. 設定の場所を確認: `ls -la ~/.config/lazygit/config.yml`
-2. YAML構文を検証: `python3 -c "import yaml; yaml.safe_load(open('~/.config/lazygit/config.yml'))"`
+2. YAML構文を検証: `python3 -c "import yaml, os; yaml.safe_load(open(os.path.expanduser('~/.config/lazygit/config.yml')))"`
 3. LazyGitを完全に再起動
 
 ## 次のステップ
@@ -295,6 +295,6 @@ AIコミットジェネレーターを削除するには:
 4. （オプション）AI CLIツールをアンインストール:
    ```bash
    pip uninstall google-generativeai
-   npm uninstall -g @anthropic-ai/claude-cli
+   npm uninstall -g @anthropic-ai/claude-code
    # Ollamaの場合、アンインストール手順に従う
    ```

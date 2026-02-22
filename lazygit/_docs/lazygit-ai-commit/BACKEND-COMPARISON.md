@@ -145,7 +145,7 @@ Quick reference to help you choose the right AI backend for your needs.
 - ✅ Best for: Quick production setup
 
 **Claude** ✅✅
-- One command: `npm install -g @anthropic-ai/claude-cli`
+- One command: `npm install -g @anthropic-ai/claude-code`
 - Get API key from website
 - Add credits to account
 - Set environment variable

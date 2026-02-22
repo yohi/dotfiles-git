@@ -119,7 +119,7 @@ if [ -n "$ANTHROPIC_API_KEY" ]; then
         run_test "Claude with API key" "claude"
     else
         echo -e "${YELLOW}SKIP${NC} (claude CLI not installed)"
-        echo "Install with: npm install -g @anthropic-ai/claude-cli"
+        echo "Install with: npm install -g @anthropic-ai/claude-code"
     fi
 else
     echo -e "${YELLOW}SKIP${NC} (ANTHROPIC_API_KEY not set)"
