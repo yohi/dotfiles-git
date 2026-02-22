@@ -4,6 +4,9 @@
 
 set -e
 
+# Determine the base scripts directory relative to this test script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
 echo "=== Comprehensive Error Scenario Testing ==="
 echo ""
 
@@ -28,7 +31,7 @@ test_scenario() {
 
 # Scenario 1: Empty diff input
 echo "Scenario 1: Empty diff input to AI generator"
-if echo "" | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "No diff input provided"; then
+if echo "" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "No diff input provided"; then
     echo "✓ PASS: Empty diff detected"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
@@ -36,6 +39,15 @@ else
     FAIL_COUNT=$((FAIL_COUNT + 1))
 fi
 echo ""
+
+# Mock backup and cleanup trap
+MOCK_TOOL_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+cleanup() {
+    if [ -f "mock-ai-tool.sh.backup" ]; then
+        mv mock-ai-tool.sh.backup "$MOCK_TOOL_PATH"
+    fi
+}
+trap cleanup EXIT
 
 # Scenario 2: AI tool returns empty output
 echo "Scenario 2: AI tool returns empty output"
@@ -45,16 +57,16 @@ cat > "$EMPTY_AI" << 'EOF'
 exit 0
 EOF
 chmod +x "$EMPTY_AI"
-cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-cp "$EMPTY_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
-if echo "test diff" | AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "AI tool returned empty output"; then
+cp "$MOCK_TOOL_PATH" mock-ai-tool.sh.backup
+cp "$EMPTY_AI" "$MOCK_TOOL_PATH"
+if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool returned empty output"; then
     echo "✓ PASS: Empty AI output detected"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
     echo "✗ FAIL: Empty AI output not detected"
             FAIL_COUNT=$((FAIL_COUNT + 1))
         fi
-        mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+        mv mock-ai-tool.sh.backup "$MOCK_TOOL_PATH"
         rm "$EMPTY_AI"
         echo ""
 # Scenario 3: AI tool fails with error
@@ -66,16 +78,16 @@ echo "Internal error" >&2
 exit 1
 EOF
     chmod +x "$FAILING_AI"
-        cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-        cp "$FAILING_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
-        if echo "test diff" | AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "AI tool failed"; then
+        cp "$MOCK_TOOL_PATH" mock-ai-tool.sh.backup
+        cp "$FAILING_AI" "$MOCK_TOOL_PATH"
+        if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool failed"; then
     echo "✓ PASS: AI tool failure detected"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
     echo "✗ FAIL: AI tool failure not detected"
     FAIL_COUNT=$((FAIL_COUNT + 1))
     fi
-    mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+    mv mock-ai-tool.sh.backup "$MOCK_TOOL_PATH"
     rm "$FAILING_AI"
     echo ""
 # Scenario 4: AI tool times out
@@ -87,21 +99,21 @@ sleep 10
 echo "feat: too slow"
 EOF
     chmod +x "$SLOW_AI"
-        cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-        cp "$SLOW_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
-        if echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "timed out"; then
+        cp "$MOCK_TOOL_PATH" mock-ai-tool.sh.backup
+        cp "$SLOW_AI" "$MOCK_TOOL_PATH"
+        if echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "timed out"; then
     echo "✓ PASS: Timeout detected"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
     echo "✗ FAIL: Timeout not detected"
     FAIL_COUNT=$((FAIL_COUNT + 1))
     fi
-    mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+    mv mock-ai-tool.sh.backup "$MOCK_TOOL_PATH"
     rm "$SLOW_AI"
     echo ""
 # Scenario 5: Parser receives empty input
 echo "Scenario 5: Parser receives empty input"
-if echo "" | ../../_scripts/lazygit-ai-commit/parse-ai-output.sh 2>&1 | grep -q "No AI output provided"; then
+if echo "" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1 | grep -q "No AI output provided"; then
     echo "✓ PASS: Parser detects empty input"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
@@ -112,7 +124,7 @@ echo ""
 
 # Scenario 6: Parser receives whitespace-only input
 echo "Scenario 6: Parser receives whitespace-only input"
-if echo -e "\n  \n\t\n" | ../../_scripts/lazygit-ai-commit/parse-ai-output.sh 2>&1 | grep -q "No valid commit messages found"; then
+if echo -e "\n  \n\t\n" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1 | grep -q "No valid commit messages found"; then
     echo "✓ PASS: Parser detects whitespace-only input"
     PASS_COUNT=$((PASS_COUNT + 1))
 else
@@ -142,7 +154,7 @@ echo ""
 
 # Scenario 8: Valid input produces valid output
 echo "Scenario 8: Valid input produces valid output"
-OUTPUT=$(echo "test diff" | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | ../../_scripts/lazygit-ai-commit/parse-ai-output.sh 2>&1)
+OUTPUT=$(echo "test diff" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" 2>&1)
 if [ -n "$OUTPUT" ] && echo "$OUTPUT" | grep -q "feat:"; then
     echo "✓ PASS: Valid input produces valid output"
     PASS_COUNT=$((PASS_COUNT + 1))
@@ -157,7 +169,7 @@ echo "Scenario 9: All error messages include suggestions"
 SUGGESTION_COUNT=0
 
 # Check ai-commit-generator.sh
-SUGGESTION_COUNT=$(grep -c "Suggestion:" ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh || true)
+SUGGESTION_COUNT=$(grep -c "Suggestion:" "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" || true)
 if [ "$SUGGESTION_COUNT" -ge 3 ]; then
     echo "✓ PASS: ai-commit-generator.sh has $SUGGESTION_COUNT suggestions"
     PASS_COUNT=$((PASS_COUNT + 1))
@@ -167,7 +179,7 @@ else
 fi
 
 # Check parse-ai-output.sh
-SUGGESTION_COUNT=$(grep -c "Suggestion:" ../../_scripts/lazygit-ai-commit/parse-ai-output.sh || true)
+SUGGESTION_COUNT=$(grep -c "Suggestion:" "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh" || true)
 if [ "$SUGGESTION_COUNT" -ge 1 ]; then
     echo "✓ PASS: parse-ai-output.sh has $SUGGESTION_COUNT suggestions"
     PASS_COUNT=$((PASS_COUNT + 1))
@@ -179,7 +191,7 @@ echo ""
 
 # Scenario 10: Timeout is configurable
 echo "Scenario 10: Timeout configuration"
-if grep -q 'TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-30}"' ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh; then
+if grep -q 'TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-30}"' "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"; then
     echo "✓ PASS: Timeout is configurable with default 30s"
     PASS_COUNT=$((PASS_COUNT + 1))
 else

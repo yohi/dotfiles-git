@@ -4,6 +4,11 @@
 
 set -e
 
+# Determine the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCS_DIR="$(cd "${SCRIPT_DIR}/../../_docs/lazygit-ai-commit" && pwd)"
+LAZYGIT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
 echo "=========================================="
 echo "Task 10 Verification"
 echo "=========================================="
@@ -16,14 +21,14 @@ NC='\033[0m'
 
 echo -e "${BLUE}1. Verifying Integration Test Suite${NC}"
 echo "-------------------------------------------"
-if [ -f "test-complete-workflow.sh" ]; then
+if [ -f "${SCRIPT_DIR}/test-complete-workflow.sh" ]; then
     echo "✓ test-complete-workflow.sh exists"
-    if grep -q "Requirements: 3.3, 3.4" test-complete-workflow.sh; then
+    if grep -q "Requirements: 3.3, 3.4" "${SCRIPT_DIR}/test-complete-workflow.sh"; then
         echo "✓ Test explicitly covers Requirements 3.3 and 3.4"
     fi
     
     # Count tests
-    TEST_COUNT=$(grep -c "test_pass\|test_fail" test-complete-workflow.sh || echo "0")
+    TEST_COUNT=$(grep -c "test_pass\|test_fail" "${SCRIPT_DIR}/test-complete-workflow.sh" || echo "0")
     echo "✓ Test suite contains $TEST_COUNT test assertions"
 else
     echo "✗ test-complete-workflow.sh not found"
@@ -35,23 +40,23 @@ echo -e "${BLUE}2. Verifying Documentation${NC}"
 echo "-------------------------------------------"
 
 # Check README.md
-if [ -f "README.md" ]; then
+if [ -f "${DOCS_DIR}/README.md" ]; then
     echo "✓ README.md exists"
     
-    if grep -q "## Usage" README.md; then
+    if grep -q "## Usage" "${DOCS_DIR}/README.md"; then
         echo "  ✓ Contains Usage section"
     fi
     
-    if grep -q "## Troubleshooting" README.md; then
+    if grep -q "## Troubleshooting" "${DOCS_DIR}/README.md"; then
         echo "  ✓ Contains Troubleshooting section"
     fi
     
-    if grep -q "Quick Start" README.md; then
+    if grep -q "Quick Start" "${DOCS_DIR}/README.md"; then
         echo "  ✓ Contains Quick Start guide"
     fi
     
     # Count sections
-    SECTION_COUNT=$(grep -c "^## " README.md)
+    SECTION_COUNT=$(grep -c "^## " "${DOCS_DIR}/README.md")
     echo "  ✓ Contains $SECTION_COUNT major sections"
 else
     echo "✗ README.md not found"
@@ -60,14 +65,14 @@ fi
 echo ""
 
 # Check TESTING-GUIDE.md
-if [ -f "TESTING-GUIDE.md" ]; then
+if [ -f "${DOCS_DIR}/TESTING-GUIDE.md" ]; then
     echo "✓ TESTING-GUIDE.md exists"
     
-    if grep -q "Quick Test" TESTING-GUIDE.md; then
+    if grep -q "Quick Test" "${DOCS_DIR}/TESTING-GUIDE.md"; then
         echo "  ✓ Contains Quick Test section"
     fi
     
-    if grep -q "Test Suite Overview" TESTING-GUIDE.md; then
+    if grep -q "Test Suite Overview" "${DOCS_DIR}/TESTING-GUIDE.md"; then
         echo "  ✓ Contains Test Suite Overview"
     fi
 else
@@ -82,11 +87,11 @@ echo "-------------------------------------------"
 BACKEND_DOCS=("QUICKSTART.md" "INSTALLATION.md" "AI-BACKEND-GUIDE.md" "BACKEND-COMPARISON.md")
 
 for doc in "${BACKEND_DOCS[@]}"; do
-    if [ -f "$doc" ]; then
+    if [ -f "${DOCS_DIR}/$doc" ]; then
         echo "✓ $doc exists"
         
         # Check for backend mentions
-        if grep -qi "gemini\|claude\|ollama" "$doc"; then
+        if grep -qi "gemini\|claude\|ollama" "${DOCS_DIR}/$doc"; then
             echo "  ✓ Documents multiple AI backends"
         fi
     else
@@ -99,19 +104,19 @@ echo ""
 echo -e "${BLUE}4. Verifying Configuration Examples${NC}"
 echo "-------------------------------------------"
 
-if [ -f "config.yml" ]; then
+if [ -f "${LAZYGIT_DIR}/config.yml" ]; then
     echo "✓ config.yml exists"
     
-    if grep -q "customCommands" config.yml; then
+    if grep -q "customCommands" "${LAZYGIT_DIR}/config.yml"; then
         echo "  ✓ Contains customCommands configuration"
     fi
     
-    if grep -q "AI_BACKEND" config.yml; then
+    if grep -q "AI_BACKEND" "${LAZYGIT_DIR}/config.yml"; then
         echo "  ✓ Contains AI_BACKEND configuration"
     fi
 fi
 
-if [ -f "config.example.yml" ]; then
+if [ -f "${LAZYGIT_DIR}/config.example.yml" ]; then
     echo "✓ config.example.yml exists"
 fi
 echo ""
@@ -122,7 +127,7 @@ echo "Executing test-complete-workflow.sh..."
 echo ""
 
 # Run the test suite
-if ./test-complete-workflow.sh > /tmp/test-output.log 2>&1; then
+if "${SCRIPT_DIR}/test-complete-workflow.sh" > /tmp/test-output.log 2>&1; then
     # Extract summary (strip ANSI color codes)
     TOTAL=$(grep "Total Tests:" /tmp/test-output.log | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $3}')
     PASSED=$(grep "Passed:" /tmp/test-output.log | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $2}')

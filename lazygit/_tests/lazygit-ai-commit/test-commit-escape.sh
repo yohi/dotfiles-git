@@ -17,6 +17,8 @@ fi
 git init
 git config user.email "test@example.com"
 git config user.name "Test User"
+git config commit.gpgsign false
+git config core.hooksPath ""
 
 echo "Test repository created at: $TEST_DIR"
 echo

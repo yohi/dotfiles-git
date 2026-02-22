@@ -120,10 +120,10 @@
 
 2. スクリプトを実行可能にする:
    ```bash
-   chmod +x ai-commit-generator.sh
-   chmod +x scripts/lazygit-ai-commit/parse-ai-output.sh
-   chmod +x scripts/lazygit-ai-commit/get-staged-diff.sh
-   chmod +x scripts/lazygit-ai-commit/mock-ai-tool.sh
+   chmod +x lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
+   chmod +x lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+   chmod +x lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh
+   chmod +x lazygit/_scripts/lazygit-ai-commit/mock-ai-tool.sh
    ```
 
 ### ステップ 4: LazyGitを設定
@@ -144,7 +144,7 @@
    ```yaml
    command: |
      # ... 既存の設定 ...
-     git diff --cached | head -c 12000 | /full/path/to/ai-commit-generator.sh | /full/path/to/scripts/lazygit-ai-commit/parse-ai-output.sh
+     git diff --cached | head -c 12000 | /full/path/to/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /full/path/to/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
    ```
    
    `/full/path/to/`をリポジトリをクローンした実際のパスに置き換えます。
@@ -191,11 +191,11 @@
 ```bash
 # mockバックエンドでテスト（APIキー不要）
 export AI_BACKEND=mock
-./test-all-error-scenarios.sh
+./lazygit/_tests/lazygit-ai-commit/test-all-error-scenarios.sh
 
 # 選択したバックエンドでテスト
 export AI_BACKEND=gemini  # またはclaudeまたはollama
-echo "test change" | ai-commit-generator.sh
+echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 ```
 
 コミットメッセージが生成されれば、すべて設定完了です！

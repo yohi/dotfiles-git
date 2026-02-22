@@ -59,7 +59,7 @@ export AI_BACKEND="gemini"
 ```bash
 # ~/.bashrc or ~/.zshrc
 export AI_BACKEND="gemini"
-export GEMINI_API_KEY="AIzaSy..."
+export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 export GEMINI_MODEL="gemini-1.5-flash"
 export TIMEOUT_SECONDS=30
 ```
@@ -101,7 +101,7 @@ export AI_BACKEND="claude"
 ```bash
 # ~/.bashrc or ~/.zshrc
 export AI_BACKEND="claude"
-export ANTHROPIC_API_KEY="sk-ant-..."
+export ANTHROPIC_API_KEY="YOUR_ANTHROPIC_API_KEY"
 export CLAUDE_MODEL="claude-3-5-haiku-20241022"
 export TIMEOUT_SECONDS=30
 ```
@@ -401,8 +401,8 @@ For maximum reliability, you could modify the script to try multiple backends:
 
 ```bash
 # Try Gemini first, fallback to Ollama
-AI_BACKEND=gemini scripts/lazygit-ai-commit/ai-commit-generator.sh || \
-AI_BACKEND=ollama scripts/lazygit-ai-commit/ai-commit-generator.sh
+AI_BACKEND=gemini lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh || \
+AI_BACKEND=ollama lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 ```
 
 ### Backend-Specific Timeouts

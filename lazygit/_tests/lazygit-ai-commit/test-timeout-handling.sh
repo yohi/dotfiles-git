@@ -3,6 +3,26 @@
 
 set -e
 
+# Determine the base scripts directory relative to this test script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+MOCK_TOOL_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+GENERATOR_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh"
+
+# Check if 'timeout' command is available
+if ! command -v timeout >/dev/null 2>&1; then
+    echo "Skipping timeout tests: 'timeout' not found"
+    exit 0
+fi
+
+# Mock backup and cleanup trap
+cleanup() {
+    if [ -f "mock-ai-tool.sh.backup" ]; then
+        mv mock-ai-tool.sh.backup "$MOCK_TOOL_PATH"
+    fi
+    rm -f "$SLOW_AI"
+}
+trap cleanup EXIT
+
 echo "=== Testing Timeout Handling (Requirement 8.4) ==="
 echo ""
 
@@ -18,12 +38,12 @@ EOF
 chmod +x "$SLOW_AI"
 
 # Backup and replace mock-ai-tool.sh temporarily
-cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-cp "$SLOW_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+cp $MOCK_TOOL_PATH mock-ai-tool.sh.backup
+cp "$SLOW_AI" $MOCK_TOOL_PATH
 
 # Run with short timeout
 START_TIME=$(date +%s)
-if echo "test diff" | TIMEOUT_SECONDS=2 AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "AI tool timed out"; then
+if echo "test diff" | TIMEOUT_SECONDS=2 AI_BACKEND=mock $GENERATOR_PATH 2>&1 | grep -q "AI tool timed out"; then
     END_TIME=$(date +%s)
     ELAPSED=$((END_TIME - START_TIME))
     echo "✓ PASS: Timeout detected correctly"
@@ -32,17 +52,17 @@ if echo "test diff" | TIMEOUT_SECONDS=2 AI_BACKEND=mock ../../_scripts/lazygit-a
         echo "✓ PASS: Timeout enforced within reasonable time"
     else
         echo "✗ FAIL: Timeout took too long: ${ELAPSED}s"
-        mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+        mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
         rm "$SLOW_AI"
         exit 1
     fi
 else
     echo "✗ FAIL: Timeout not detected"
-    mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+    mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
     rm "$SLOW_AI"
     exit 1
 fi
-mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
 rm "$SLOW_AI"
 echo ""
 
@@ -56,27 +76,27 @@ EOF
 chmod +x "$SLOW_AI"
 
 # Backup and replace mock-ai-tool.sh temporarily
-cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-cp "$SLOW_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+cp $MOCK_TOOL_PATH mock-ai-tool.sh.backup
+cp "$SLOW_AI" $MOCK_TOOL_PATH
 
-OUTPUT=$(echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 || true)
+OUTPUT=$(echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock $GENERATOR_PATH 2>&1 || true)
 if echo "$OUTPUT" | grep -q "Suggestion:"; then
     echo "✓ PASS: Timeout error includes helpful suggestion"
     echo "  Message: $(echo "$OUTPUT" | grep "Suggestion:")"
 else
     echo "✗ FAIL: Timeout error missing suggestion"
-    mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+    mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
     rm "$SLOW_AI"
     exit 1
 fi
-mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
 rm "$SLOW_AI"
 echo ""
 
 # Test 3: Verify normal operation completes within timeout
 echo "Test 3: Testing normal operation completes within timeout..."
 START_TIME=$(date +%s)
-if OUTPUT=$(echo "test diff" | TIMEOUT_SECONDS=30 ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1); then
+if OUTPUT=$(echo "test diff" | TIMEOUT_SECONDS=30 $GENERATOR_PATH 2>&1); then
     END_TIME=$(date +%s)
     ELAPSED=$((END_TIME - START_TIME))
     echo "✓ PASS: Normal operation completed successfully"
@@ -92,7 +112,7 @@ echo ""
 
 # Test 4: Verify timeout is configurable via environment variable
 echo "Test 4: Testing timeout configuration..."
-if grep -q 'TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-30}"' ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh; then
+if grep -q 'TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-30}"' $GENERATOR_PATH; then
     echo "✓ PASS: Timeout is configurable via TIMEOUT_SECONDS environment variable"
     echo "  Default: 30 seconds"
 else
@@ -112,28 +132,28 @@ EOF
 chmod +x "$SLOW_AI"
 
 # Backup and replace mock-ai-tool.sh temporarily
-cp ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh mock-ai-tool.sh.backup
-cp "$SLOW_AI" ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+cp $MOCK_TOOL_PATH mock-ai-tool.sh.backup
+cp "$SLOW_AI" $MOCK_TOOL_PATH
 
 START_TIME=$(date +%s)
-if echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1 | grep -q "timed out"; then
+if echo "test diff" | TIMEOUT_SECONDS=1 AI_BACKEND=mock $GENERATOR_PATH 2>&1 | grep -q "timed out"; then
     END_TIME=$(date +%s)
     ELAPSED=$((END_TIME - START_TIME))
     if [ $ELAPSED -le 3 ]; then
         echo "✓ PASS: Short timeout enforced correctly (${ELAPSED}s)"
     else
         echo "✗ FAIL: Short timeout took too long: ${ELAPSED}s"
-        mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+        mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
         rm "$SLOW_AI"
         exit 1
     fi
 else
     echo "✗ FAIL: Short timeout not detected"
-    mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+    mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
     rm "$SLOW_AI"
     exit 1
 fi
-mv mock-ai-tool.sh.backup ../../_scripts/lazygit-ai-commit/mock-ai-tool.sh
+mv mock-ai-tool.sh.backup $MOCK_TOOL_PATH
 rm "$SLOW_AI"
 echo ""
 

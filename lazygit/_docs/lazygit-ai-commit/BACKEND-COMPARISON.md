@@ -120,14 +120,14 @@ Quick reference to help you choose the right AI backend for your needs.
 - Subject to Google's privacy policy
 - Data may be used for improvements
 - ⚠️ Review diffs before generating
-- ✅ Best for: Open source or non-sensitive code
+- ✅ Best for: open-source or non-sensitive code
 
 **Claude** ☁️
 - Code sent to Anthropic servers
 - Subject to Anthropic's privacy policy
 - Data not used for training (per policy)
 - ⚠️ Review diffs before generating
-- ✅ Best for: Open source or non-sensitive code
+- ✅ Best for: open-source or non-sensitive code
 
 ### Setup Difficulty
 
@@ -176,7 +176,7 @@ Quick reference to help you choose the right AI backend for your needs.
 
 ## Use Case Recommendations
 
-### Individual Developer (Open Source)
+### Individual Developer (Open-Source)
 **Recommended: Gemini**
 - Fast and free
 - Good quality
@@ -257,7 +257,7 @@ ollama serve
 
 ## Quick Decision Tree
 
-```
+```text
 Do you need it for testing only?
 ├─ Yes → Mock
 └─ No → Do you have privacy/compliance requirements?
@@ -289,7 +289,7 @@ No code changes needed - just change the environment variable!
 
 ## Performance Benchmarks
 
-Based on typical usage (500 byte diff):
+Based on typical usage (500-byte diff):
 
 | Backend | Avg Time | P95 Time | Timeout Rate |
 |---------|----------|----------|--------------|
@@ -301,7 +301,7 @@ Based on typical usage (500 byte diff):
 
 ## Cost Estimates
 
-Based on 50 commits/day, 500 bytes avg diff:
+Based on 50 commits/day, 500-byte avg diff:
 
 | Backend | Daily Cost | Monthly Cost | Yearly Cost |
 |---------|------------|--------------|-------------|

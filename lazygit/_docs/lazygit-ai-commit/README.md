@@ -77,8 +77,8 @@ export AI_BACKEND=gemini
 
 ```bash
 chmod +x ai-commit-generator.sh
-chmod +x scripts/lazygit-ai-commit/parse-ai-output.sh
-chmod +x scripts/lazygit-ai-commit/get-staged-diff.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/get-staged-diff.sh
 ```
 
 ### 5. LazyGitで使用
@@ -509,13 +509,13 @@ git log -1
 
 ```bash
 # 1. AI生成をテスト
-echo "test change" | AI_BACKEND=mock scripts/lazygit-ai-commit/ai-commit-generator.sh
+echo "test change" | AI_BACKEND=mock lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # 2. パーサーをテスト
-echo -e "feat: test\nfix: another" | scripts/lazygit-ai-commit/parse-ai-output.sh
+echo -e "feat: test\nfix: another" | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 
 # 3. 完全なパイプラインをテスト
-git diff --cached | scripts/lazygit-ai-commit/ai-commit-generator.sh | scripts/lazygit-ai-commit/parse-ai-output.sh
+git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 ## トラブルシューティング
@@ -572,7 +572,7 @@ git diff --cached | scripts/lazygit-ai-commit/ai-commit-generator.sh | scripts/l
 - AIツールがインストールされているか確認: `which gemini`または`ollama list`
 - インターネット接続を確認（クラウドAIの場合）
 - Ollamaの場合: サービスが実行中であることを確認: `ollama serve`
-- AIツールを独立してテスト: `echo "test" | scripts/lazygit-ai-commit/ai-commit-generator.sh`
+- AIツールを独立してテスト: `echo "test" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh`
 
 **要件**: 8.2 - 適切なエラーメッセージによる強化されたエラー処理
 
@@ -707,7 +707,7 @@ source ~/.bashrc
 set -x  # デバッグモードを有効化
 
 # またはデバッグ付きで手動実行:
-bash -x scripts/lazygit-ai-commit/ai-commit-generator.sh < test-diff.txt
+bash -x lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh < test-diff.txt
 ```
 
 #### コンポーネントを個別にテスト
@@ -717,13 +717,13 @@ bash -x scripts/lazygit-ai-commit/ai-commit-generator.sh < test-diff.txt
 git diff --cached
 
 # AI生成をテスト
-git diff --cached | scripts/lazygit-ai-commit/ai-commit-generator.sh
+git diff --cached | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # パースをテスト
-echo -e "feat: test\nfix: another" | scripts/lazygit-ai-commit/parse-ai-output.sh
+echo -e "feat: test\nfix: another" | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 
 # 完全なパイプラインをテスト
-git diff --cached | head -c 12000 | scripts/lazygit-ai-commit/ai-commit-generator.sh | scripts/lazygit-ai-commit/parse-ai-output.sh
+git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 #### LazyGitログを確認

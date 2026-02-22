@@ -149,6 +149,9 @@ if [ $GEMINI_EXIT_CODE -ne 0 ]; then
       } | run_gemini "$FALLBACK_MODEL" "$PROMPT" "$GEMINI_ERR_FILE"
     )
     GEMINI_EXIT_CODE=$?
+    if [ $GEMINI_EXIT_CODE -eq 0 ]; then
+      SELECTED_MODEL="$FALLBACK_MODEL"
+    fi
     set -e
   fi
 fi
@@ -227,6 +230,24 @@ if [ -z "$FIRST_VALID" ]; then
     } | run_gemini "$SELECTED_MODEL" "$RETRY_PROMPT" "$GEMINI_ERR_FILE"
   )
   GEMINI_EXIT_CODE=$?
+  if [ $GEMINI_EXIT_CODE -ne 0 ] && grep -q "ModelNotFoundError" "$GEMINI_ERR_FILE"; then
+    set +e
+    MESSAGE_RAW=$(
+      {
+        printf '[branch]\n%s\n' "$BRANCH_NAME"
+        printf '\n[files]\n%s\n' "$FILE_LIST"
+        printf '\n[diff] (max lines: %s)\n' "$MAX_DIFF_LINES"
+        printf '%s\n' "$DIFF"
+        if [ -n "$COMMIT_HINT" ]; then
+          printf '\n[hint]\n%s\n' "$COMMIT_HINT"
+        fi
+      } | run_gemini "$FALLBACK_MODEL" "$RETRY_PROMPT" "$GEMINI_ERR_FILE"
+    )
+    GEMINI_EXIT_CODE=$?
+    if [ $GEMINI_EXIT_CODE -eq 0 ]; then
+      SELECTED_MODEL="$FALLBACK_MODEL"
+    fi
+  fi
   set -e
   if [ $GEMINI_EXIT_CODE -ne 0 ]; then
     if [ $GEMINI_EXIT_CODE -eq 124 ]; then

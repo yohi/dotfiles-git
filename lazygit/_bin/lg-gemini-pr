@@ -101,6 +101,12 @@ fi
 TITLE=$(echo "$JSON_CONTENT" | jq -r '.title // ""')
 BODY=$(echo "$JSON_CONTENT" | jq -r '.body // ""')
 
+# Validate that title and body are not empty
+if [ -z "$(echo "$TITLE" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" ] || [ -z "$(echo "$BODY" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')" ]; then
+  echo "Error: Gemini produced empty title or body." >&2
+  exit 1
+fi
+
 echo ""
 echo "=========================================="
 echo "Title: $TITLE"

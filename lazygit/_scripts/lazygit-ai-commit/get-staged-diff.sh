@@ -3,6 +3,13 @@
 # Requirements: 5.1, 2.4, 8.1
 
 set -e
+set -o pipefail
+
+# Check if we are inside a git repository
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Error: Not inside a git repository" >&2
+    exit 1
+fi
 
 # Check if there are any staged changes
 if git diff --cached --quiet; then

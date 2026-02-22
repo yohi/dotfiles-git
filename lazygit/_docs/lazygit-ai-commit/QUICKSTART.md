@@ -14,15 +14,15 @@ git clone <repo-url> ~/lazygit-ai-commit
 cd ~/lazygit-ai-commit
 
 # 2. スクリプトを実行可能にする
-chmod +x *.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/*.sh
 
 # 3. 動作することをテスト
 export AI_BACKEND=mock
-echo "test change" | scripts/lazygit-ai-commit/ai-commit-generator.sh
+echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # 4. config.ymlを完全なパスで更新
-# config.ymlを編集してscripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
-# 例: /home/username/lazygit-ai-commit/ai-commit-generator.sh
+# config.ymlを編集してlazygit/_scripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
+# 例: /home/username/lazygit-ai-commit/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # 5. LazyGit設定にコピー
 cp config.yml ~/.config/lazygit/config.yml
@@ -57,13 +57,13 @@ source ~/.bashrc
 # 4. クローンしてセットアップ
 git clone <repo-url> ~/lazygit-ai-commit
 cd ~/lazygit-ai-commit
-chmod +x *.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/*.sh
 
 # 5. テスト
-echo "test change" | scripts/lazygit-ai-commit/ai-commit-generator.sh
+echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # 6. config.ymlのパスを更新してLazyGitにコピー
-# config.ymlを編集: scripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
+# config.ymlを編集: lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
 cp config.yml ~/.config/lazygit/config.yml
 
 # 7. LazyGitで使用
@@ -92,13 +92,13 @@ source ~/.bashrc
 # 5. クローンしてセットアップ
 git clone <repo-url> ~/lazygit-ai-commit
 cd ~/lazygit-ai-commit
-chmod +x *.sh
+chmod +x lazygit/_scripts/lazygit-ai-commit/*.sh
 
 # 6. テスト
-echo "test change" | scripts/lazygit-ai-commit/ai-commit-generator.sh
+echo "test change" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
 
 # 7. config.ymlのパスを更新してLazyGitにコピー
-# config.ymlを編集: scripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
+# config.ymlを編集: lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.shを完全なパスに置き換える
 cp config.yml ~/.config/lazygit/config.yml
 
 # 8. LazyGitで使用
@@ -124,7 +124,7 @@ lazygit
 
 **修正**: `~/.config/lazygit/config.yml`を編集して完全な絶対パスを使用:
 ```yaml
-git diff --cached | head -c 12000 | /home/username/lazygit-ai-commit/ai-commit-generator.sh | /home/username/lazygit-ai-commit/parse-ai-output.sh
+git diff --cached | head -c 12000 | /home/username/lazygit-ai-commit/lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | /home/username/lazygit-ai-commit/lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
 ```
 
 ### "GEMINI_API_KEY not set"
@@ -164,7 +164,7 @@ export AI_BACKEND="gemini"
 
 問題を診断するためにテストスイートを実行:
 ```bash
-./test-ai-backend-integration.sh
+./lazygit/_tests/lazygit-ai-commit/test-ai-backend-integration.sh
 ```
 
 これにより、何が動作していて何を修正する必要があるかが正確にわかります！

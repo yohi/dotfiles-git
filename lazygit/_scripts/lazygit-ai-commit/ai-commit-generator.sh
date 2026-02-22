@@ -184,7 +184,8 @@ else
 fi
 
 # Validate AI output is not empty (Requirement 8.2)
-if [ -z "$AI_OUTPUT" ]; then
+AI_OUTPUT_TRIMMED=$(echo "$AI_OUTPUT" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+if [ -z "$AI_OUTPUT_TRIMMED" ]; then
     echo "Error: AI tool returned empty output" >&2
     echo "Suggestion: Check AI tool configuration or try different changes" >&2
     exit 1

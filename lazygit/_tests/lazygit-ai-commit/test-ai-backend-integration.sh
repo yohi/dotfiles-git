@@ -5,6 +5,9 @@
 
 set -e
 
+# Determine the base scripts directory relative to this test script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
 echo "=== AI Backend Integration Test ==="
 echo ""
 
@@ -41,7 +44,7 @@ run_test() {
     
     # Run the test
     set +e
-    OUTPUT=$(echo "$TEST_DIFF" | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1)
+    OUTPUT=$(echo "$TEST_DIFF" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1)
     EXIT_CODE=$?
     set -e
     
@@ -169,7 +172,7 @@ echo ""
 echo "--- Test 8: Empty Input Handling ---"
 echo -n "Testing empty input... "
 set +e
-OUTPUT=$(echo "" | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh 2>&1)
+OUTPUT=$(echo "" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1)
 EXIT_CODE=$?
 set -e
 if [ $EXIT_CODE -ne 0 ]; then

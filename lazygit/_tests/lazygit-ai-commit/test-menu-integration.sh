@@ -5,6 +5,9 @@
 
 set -e
 
+# Determine the directory where this script is located and base scripts dir
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
 echo "=== menuFromCommand Integration Test ==="
 echo ""
 
@@ -22,7 +25,7 @@ echo "test content" > "$TEST_DIR/test.txt"
 git -C "$TEST_DIR" add test.txt
 
 # Run the complete pipeline (simulating LazyGit's command)
-RESULT=$(git -C "$TEST_DIR" diff --cached | head -c 12000 | ../../_scripts/lazygit-ai-commit/ai-commit-generator.sh | ../../_scripts/lazygit-ai-commit/parse-ai-output.sh)
+RESULT=$(git -C "$TEST_DIR" diff --cached | head -c 12000 | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" | "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/parse-ai-output.sh")
 
 # Verify output
 if [ -z "$RESULT" ]; then
@@ -53,7 +56,7 @@ fix: resolve bug
 
 docs: update readme"
 
-FILTERED=$(echo "$SAMPLE_OUTPUT" | grep -E '.+\S.*')
+FILTERED=$(echo "$SAMPLE_OUTPUT" | grep -P "$FILTER_PATTERN")
 FILTERED_COUNT=$(echo "$FILTERED" | wc -l)
 
 if [ "$FILTERED_COUNT" -eq 3 ]; then
@@ -107,7 +110,7 @@ echo "Test 5: LoadingText configuration"
 echo "---------------------------------"
 
 # Check that config.yml has loadingText set
-if grep -q 'loadingText: "Generating commit messages with AI..."' ../../config.yml; then
+if grep -q 'loadingText: "Generating commit messages with AI..."' "${SCRIPT_DIR}/config.yml"; then
     echo "✓ PASS: loadingText configured for user feedback"
 else
     echo "✗ FAIL: loadingText not found in config.yml"
@@ -120,7 +123,7 @@ echo "Test 6: Color formatting in labelFormat"
 echo "---------------------------------------"
 
 # Check that config.yml has green color formatting
-if grep -q 'labelFormat: "{{ .msg | green }}"' ../../config.yml; then
+if grep -q 'labelFormat: "{{ .msg | green }}"' "${SCRIPT_DIR}/config.yml"; then
     echo "✓ PASS: labelFormat configured with green color"
 else
     echo "✗ FAIL: labelFormat color not configured"
@@ -144,7 +147,7 @@ REQUIRED_FIELDS=(
 
 ALL_PRESENT=true
 for field in "${REQUIRED_FIELDS[@]}"; do
-    if ! grep -q "$field" ../../config.yml; then
+    if ! grep -q "$field" "${SCRIPT_DIR}/config.yml"; then
         echo "✗ FAIL: Missing required field: $field"
         ALL_PRESENT=false
     fi

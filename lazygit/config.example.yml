@@ -120,7 +120,7 @@ customCommands:
           # Example: /home/username/lazygit-ai-commit/_scripts/ai-commit-generator.sh
           # ========================================================================
           
-          git diff --cached | head -c 12000 | _scripts/lazygit-ai-commit/ai-commit-generator.sh | _scripts/lazygit-ai-commit/parse-ai-output.sh
+          git diff --cached | head -c 12000 | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh | lazygit/_scripts/lazygit-ai-commit/parse-ai-output.sh
         
         # ========================================================================
         # Output Parsing Configuration
