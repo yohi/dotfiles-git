@@ -207,7 +207,6 @@ MESSAGE=$(printf '%s\n' "$MESSAGE" | awk '
   /^```/ { next }
   /^```git/ { next }
   /^git commit/ { next }
-  /^```/ { next }
   /^\s*[#*-]/ { next }
   /^\s*$/ { next }
   { print }
@@ -285,7 +284,6 @@ if [ -z "$FIRST_VALID" ]; then
     /^```/ { next }
     /^```git/ { next }
     /^git commit/ { next }
-    /^```/ { next }
     /^\s*[#*-]/ { next }
     /^\s*$/ { next }
     { print }

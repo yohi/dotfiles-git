@@ -280,7 +280,7 @@ sudo systemctl start ollama
    ```
 3. スクリプトを個別にテスト:
    ```bash
-   echo "test diff" | ai-commit-generator.sh
+   echo "test diff" | lazygit/_scripts/lazygit-ai-commit/ai-commit-generator.sh
    ```
 4. LazyGitログでエラーを確認
 

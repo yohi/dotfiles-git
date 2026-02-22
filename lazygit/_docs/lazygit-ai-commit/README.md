@@ -64,14 +64,16 @@ cp config/config.yml ~/.config/lazygit/config.yml
 
 # または既存の設定にマージ
 cat config/config.yml >> ~/.config/lazygit/config.yml
-```### 3. AIバックエンドを設定
+```
+
+### 3. AIバックエンドを設定
 
 `config/config.yml`を編集し、`AI_BACKEND`変数で選択したAIバックエンドのコメントを解除:
 
-```yaml
+```bash
 # Geminiの場合（デフォルト）
 export AI_BACKEND=gemini
-
+```
 
 ### 4. スクリプトを実行可能にする
 

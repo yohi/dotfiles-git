@@ -89,7 +89,7 @@ echo "Generating PR content with Gemini ($GEMINI_MODEL)..."
 GEMINI_OUTPUT=$("$TIMEOUT_CMD" "${TIMEOUT_SECONDS}s" gemini --model "$GEMINI_MODEL" --output-format text -e none -p "$PROMPT")
 
 # Clean output (remove markdown code blocks if any)
-JSON_CONTENT=$(echo "$GEMINI_OUTPUT" | sed 's/^```json//g' | sed 's/^```//g' | sed 's/```$//g')
+JSON_CONTENT=$(echo "$GEMINI_OUTPUT" | sed -e 's/^```json//g' -e 's/^```//g' -e 's/```$//g')
 
 # Validate JSON
 if ! echo "$JSON_CONTENT" | jq empty 2>/dev/null; then

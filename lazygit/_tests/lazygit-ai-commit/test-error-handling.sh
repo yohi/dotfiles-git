@@ -6,6 +6,15 @@ set -e
 
 # Determine the base scripts directory relative to this test script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+MOCK_TOOL_PATH="${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+MOCK_BACKUP="${MOCK_TOOL_PATH}.backup"
+
+cleanup() {
+    if [ -f "$MOCK_BACKUP" ]; then
+        mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
+    fi
+}
+trap cleanup EXIT
 
 echo "=== Testing Error Handling Enhancements ==="
 echo ""
@@ -61,17 +70,17 @@ EOF
 chmod +x "$TEMP_SCRIPT"
 
 # Backup and replace mock-ai-tool.sh temporarily
-    cp "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh" mock-ai-tool.sh.backup
-    cp "$TEMP_SCRIPT" "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+    cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
+    cp "$TEMP_SCRIPT" "$MOCK_TOOL_PATH"
 
         # Test with empty output
 
         if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool returned empty output"; then
             echo "✓ PASS: Empty output is detected and reported"
-            mv mock-ai-tool.sh.backup "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+            mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
         else
             echo "✗ FAIL: Empty output is not properly handled"
-            mv mock-ai-tool.sh.backup "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+            mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
             rm "$TEMP_SCRIPT"
             exit 1
         fi
@@ -90,16 +99,16 @@ EOF
     chmod +x "$TEMP_SCRIPT"
 
     # Backup and replace mock-ai-tool.sh temporarily
-    cp "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh" mock-ai-tool.sh.backup
-    cp "$TEMP_SCRIPT" "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+    cp "$MOCK_TOOL_PATH" "$MOCK_BACKUP"
+    cp "$TEMP_SCRIPT" "$MOCK_TOOL_PATH"
     
     # Test with failing AI tool
     if echo "test diff" | AI_BACKEND=mock "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | grep -q "AI tool failed"; then
         echo "✓ PASS: AI tool failure is detected and reported"
-        mv mock-ai-tool.sh.backup "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+        mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
     else
         echo "✗ FAIL: AI tool failure is not properly handled"
-        mv mock-ai-tool.sh.backup "${SCRIPT_DIR}/_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+        mv "$MOCK_BACKUP" "$MOCK_TOOL_PATH"
         rm "$TEMP_SCRIPT"
         exit 1
     fi
