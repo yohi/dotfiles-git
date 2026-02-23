@@ -153,7 +153,7 @@ git reset HEAD --quiet
 
 # Try to generate messages with empty staging
 if "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | \
-    AI_TOOL="$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/mock-ai-tool.sh" "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | \
+    AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" 2>&1 | \
     grep -q "No diff input provided"; then
     test_pass "Empty staging area detected"
 else
@@ -173,7 +173,7 @@ dd if=/dev/zero of=large.bin bs=1024 count=20 2>/dev/null
 git add large.bin
 
 # Check that diff is truncated to 12KB
-DIFF_SIZE=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | wc -c)
+DIFF_SIZE=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" | wc -c)
 if [ "$DIFF_SIZE" -le 12000 ]; then
     test_pass "Large diff truncated correctly (${DIFF_SIZE} bytes)"
 else

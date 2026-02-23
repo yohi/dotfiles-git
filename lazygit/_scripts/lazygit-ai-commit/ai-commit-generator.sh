@@ -78,6 +78,13 @@ docs(readme): update installation steps
 refactor(api): simplify error handling logic
 test(user): add unit tests for user model'
 
+# Pre-flight dependency check for python3
+if ! command -v python3 &> /dev/null; then
+    echo "Error: python3 is required but not found" >&2
+    echo "Suggestion: Please install python3 to use the AI commit generator" >&2
+    exit 1
+fi
+
 # Read diff from stdin with UTF-8 safe truncation (approx 12000 characters)
 # Requirement: Prevent split multibyte characters at the boundary
 DIFF_INPUT=$(python3 -c "import sys; sys.stdout.write(sys.stdin.read(12000))")
