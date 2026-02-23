@@ -172,12 +172,34 @@ echo "------------------------------"
 dd if=/dev/zero of=large.bin bs=1024 count=20 2>/dev/null
 git add large.bin
 
-# Check that diff is truncated to 12KB
-DIFF_SIZE=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh" | wc -c)
-if [ "$DIFF_SIZE" -le 12000 ]; then
-    test_pass "Large diff truncated correctly (${DIFF_SIZE} bytes)"
+# Temporarily replace mock-ai-tool.sh securely using a trap
+SIZE_MOCK="$SCRIPT_DIR/mock-ai-tool-size.sh"
+cat > "$SIZE_MOCK" << 'EOF'
+#!/bin/bash
+# Print length of stdin without any extra spaces
+wc -c | tr -d ' '
+EOF
+chmod +x "$SIZE_MOCK"
+
+ORIGINAL_MOCK="$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/mock-ai-tool.sh"
+BACKUP_MOCK="$SCRIPT_DIR/mock-ai-tool.sh.backup"
+cp "$ORIGINAL_MOCK" "$BACKUP_MOCK"
+trap 'mv "$BACKUP_MOCK" "$ORIGINAL_MOCK" 2>/dev/null; rm -f "$SIZE_MOCK"' EXIT
+cp "$SIZE_MOCK" "$ORIGINAL_MOCK"
+
+# Check that diff is truncated (mock outputs the length of the stdin it received)
+INPUT_SIZE=$("$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/get-staged-diff.sh" | AI_BACKEND=mock "$SCRIPT_DIR/../../_scripts/lazygit-ai-commit/ai-commit-generator.sh")
+
+# Restore original mock
+mv "$BACKUP_MOCK" "$ORIGINAL_MOCK"
+trap - EXIT
+rm -f "$SIZE_MOCK"
+
+# The max theoretical size is 12000 (diff cap) + ~600 (prompt overhead)
+if [ "$INPUT_SIZE" -le 13000 ]; then
+    test_pass "Large diff truncated correctly (${INPUT_SIZE} bytes delivered to AI tool)"
 else
-    test_fail "Diff not truncated: ${DIFF_SIZE} bytes"
+    test_fail "Diff not truncated: ${INPUT_SIZE} bytes delivered to AI tool"
 fi
 
 # Clean up

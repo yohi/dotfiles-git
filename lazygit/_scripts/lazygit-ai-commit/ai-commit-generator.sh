@@ -116,13 +116,14 @@ AI_OUTPUT=""
 case "$AI_BACKEND" in
     gemini)
         # Gemini API call via Python
-        AI_COMMAND="python3 -c \"
+        export GEMINI_MODEL
+        AI_COMMAND=(python3 -c '
 import os
 import sys
 import google.generativeai as genai
 
-genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-model = genai.GenerativeModel('$GEMINI_MODEL')
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+model = genai.GenerativeModel(os.environ["GEMINI_MODEL"])
 
 # Read input from stdin
 input_text = sys.stdin.read()
@@ -131,28 +132,28 @@ try:
     response = model.generate_content(input_text)
     print(response.text)
 except Exception as e:
-    print(f'Error: {e}', file=sys.stderr)
+    print(f"Error: {e}", file=sys.stderr)
     sys.exit(1)
-\""
+')
         ;;
     claude)
         # Claude API call via official CLI
-        AI_COMMAND="claude --model $CLAUDE_MODEL"
+        AI_COMMAND=(claude --model "$CLAUDE_MODEL")
         ;;
     ollama)
         # Ollama local API call
-        AI_COMMAND="ollama run $OLLAMA_MODEL"
+        AI_COMMAND=(ollama run "$OLLAMA_MODEL")
         ;;
     mock)
         # Mock tool for testing
-        AI_COMMAND="$AI_TOOL"
+        AI_COMMAND=("$AI_TOOL")
         ;;
 esac
 
 if command -v timeout &> /dev/null; then
     # Use timeout command to prevent hanging
     set +e  # Temporarily disable exit on error to capture exit code
-    AI_OUTPUT=$(echo "$COMBINED_INPUT" | timeout "$TIMEOUT_SECONDS" bash -c "$AI_COMMAND" 2>&1)
+    AI_OUTPUT=$(echo "$COMBINED_INPUT" | timeout "$TIMEOUT_SECONDS" "${AI_COMMAND[@]}" 2>&1)
     EXIT_CODE=$?
     set -e  # Re-enable exit on error
     
@@ -180,7 +181,7 @@ if command -v timeout &> /dev/null; then
 else
     # Fallback if timeout command is not available
     set +e  # Temporarily disable exit on error to capture exit code
-    AI_OUTPUT=$(echo "$COMBINED_INPUT" | bash -c "$AI_COMMAND" 2>&1)
+    AI_OUTPUT=$(echo "$COMBINED_INPUT" | "${AI_COMMAND[@]}" 2>&1)
     EXIT_CODE=$?
     set -e  # Re-enable exit on error
     
