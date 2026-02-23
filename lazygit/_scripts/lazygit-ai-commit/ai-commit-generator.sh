@@ -111,6 +111,8 @@ ${DIFF_INPUT}
 # Requirement 7.2: Execute configured command with diff as input
 # Requirement 7.3: Function without code changes when backend changes
 AI_OUTPUT=""
+AI_ERR_FILE=$(mktemp -t lazygit-ai-commit-err.XXXXXX 2>/dev/null || mktemp /tmp/lazygit-ai-commit-err.XXXXXX)
+trap 'rm -f "$AI_ERR_FILE"' EXIT
 
 # Build AI-specific command
 case "$AI_BACKEND" in
@@ -153,7 +155,7 @@ esac
 if command -v timeout &> /dev/null; then
     # Use timeout command to prevent hanging
     set +e  # Temporarily disable exit on error to capture exit code
-    AI_OUTPUT=$(echo "$COMBINED_INPUT" | timeout "$TIMEOUT_SECONDS" "${AI_COMMAND[@]}" 2>&1)
+    AI_OUTPUT=$(echo "$COMBINED_INPUT" | timeout "$TIMEOUT_SECONDS" "${AI_COMMAND[@]}" 2>"$AI_ERR_FILE")
     EXIT_CODE=$?
     set -e  # Re-enable exit on error
     
@@ -161,11 +163,13 @@ if command -v timeout &> /dev/null; then
         if [ $EXIT_CODE -eq 124 ]; then
             # Timeout occurred (exit code 124 from timeout command)
             echo "Error: AI tool timed out after ${TIMEOUT_SECONDS} seconds" >&2
+            [ -s "$AI_ERR_FILE" ] && cat "$AI_ERR_FILE" >&2
             echo "Suggestion: Try staging fewer files or increase TIMEOUT_SECONDS" >&2
             exit 1
         else
             # Other error
             echo "Error: AI tool failed with exit code $EXIT_CODE" >&2
+            [ -s "$AI_ERR_FILE" ] && cat "$AI_ERR_FILE" >&2
             if [ "$AI_BACKEND" = "gemini" ]; then
                 echo "Suggestion: Check GEMINI_API_KEY and internet connection" >&2
             elif [ "$AI_BACKEND" = "claude" ]; then
@@ -181,12 +185,13 @@ if command -v timeout &> /dev/null; then
 else
     # Fallback if timeout command is not available
     set +e  # Temporarily disable exit on error to capture exit code
-    AI_OUTPUT=$(echo "$COMBINED_INPUT" | "${AI_COMMAND[@]}" 2>&1)
+    AI_OUTPUT=$(echo "$COMBINED_INPUT" | "${AI_COMMAND[@]}" 2>"$AI_ERR_FILE")
     EXIT_CODE=$?
     set -e  # Re-enable exit on error
     
     if [ $EXIT_CODE -ne 0 ]; then
         echo "Error: AI tool failed with exit code $EXIT_CODE" >&2
+        [ -s "$AI_ERR_FILE" ] && cat "$AI_ERR_FILE" >&2
         echo "Suggestion: Check AI tool configuration and try again" >&2
         exit 1
     fi
