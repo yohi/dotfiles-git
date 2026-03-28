@@ -5,22 +5,20 @@
 
 # Component-specific logic
 
-# Orchestrator core configuration
-# Note: These are symlinked from ../../common-mk/ when managed by dotfiles-core
 
-# Component-specific logic
+
+
 
 REPO_ROOT ?= $(CURDIR)
-.DEFAULT_GOAL := setup
 include _mk/git.mk
 
 .PHONY: link
-link:
+link: ## シンボリックリンクを展開し、dotfiles を配置します
 	@echo "==> Linking dotfiles-git"
 	mkdir -p $(HOME)/.config/lazygit
 	ln -sfn $(REPO_ROOT)/lazygit/config.yml $(HOME)/.config/lazygit/config.yml
 
 .PHONY: setup
-setup:
+setup: ## セットアップ（依存関係、設定適用）を一括実行します
 	@echo "==> Setting up dotfiles-git"
 	$(MAKE) setup-git
