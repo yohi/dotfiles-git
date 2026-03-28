@@ -1,104 +1,111 @@
-# LazyGit Gemini CLI Conventional Commit Generator
+# dotfiles-git
 
-LazyGit の Files コンテキストで Ctrl+a を押すと、Gemini CLI で Conventional Commits v1.0.0 準拠のコミットメッセージ案を生成し、LazyGit 内のメニューで確認して `git commit -m` を実行するためのスクリプトと設定例です。
+Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミットメッセージ生成機能を含む）を管理するコンポーネントです。
 
-## 導入手順
+## 概要
 
-### 1. Gemini CLI を用意
+このリポジトリは、開発ワークフローに不可欠な Git 環境を構築するための設定ファイルとツールを提供します。
+主な提供機能は以下の通りです：
 
-`gemini` コマンドが実行できる状態にしてください。
+- **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` (予定)
+- **LazyGit 設定**: 生産性を高めるためのカスタムコマンド、UI設定
+- **AI-Powered ツール**: Gemini AI を活用した Conventional Commits 準拠のコミットメッセージ生成、PR 説明文生成
+
+## ディレクトリ構成
+
+`AGENTS.md` に基づく標準的な構成を採用しています：
+
+- `lazygit/`: LazyGit の設定ファイル群 (`~/.config/lazygit` へのリンク対象)
+  - `_bin/`: AI 連携スクリプト (`lg-gemini-commit`, `lg-gemini-pr`)
+  - `_scripts/`: AI コミット生成のパイプライン（内部実装）
+  - `_tests/`: シェルベースのテストスクリプト
+  - `examples/`: 設定のスニペット例
+- `_mk/`: Makefile 用の構成ファイル (`git.mk` など)
+- `_docs/`: 詳細ドキュメント
+
+## 導入方法
+
+このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されています。
+
+### 1. 全体セットアップ
+
+`dotfiles-core` のルートディレクトリから `make` コマンドを実行します。これにより、必要なシンボリックリンクが作成されます：
 
 ```bash
-gemini --version
+make link
 ```
 
-> Gemini CLI のインストール手順は公式ドキュメントに従ってください。
+> **Note**: `lazygit/config.yml` を `~/.config/lazygit/config.yml` にリンクします。
 
-### 2. スクリプトを配置
+### 2. スクリプトの PATH 設定
+
+`lazygit/_bin/` のスクリプト（`lg-gemini-commit` 等）は、`dotfiles-zsh`
+コンポーネントを併用している場合、自動的に `$PATH` に追加されます。
+
+### 3. LazyGit 設定の反映
+
+AI 連携などのカスタムコマンドを利用するには、
+`examples/lazygit-config-snippet.yml` の内容を
+`~/.config/lazygit/config.yml` に追記してください。
+
+## 主要機能：AI 搭載ツール
+
+Gemini AI を活用した強力な開発補助ツールを提供し、日々の Git 操作を効率化します。
+
+### 1. LazyGit & Gemini AI コマンド (Ctrl+a)
+
+LazyGit の `Files` コンテキストで `Ctrl+a` を押すことで、`lg-gemini-commit` が `staged diff` を解析し、最適なコミットメッセージを生成します。
+
+- **Conventional Commits v1.0.0 準拠**: `feat`, `fix`, `docs`, `refactor` などを適切に付与します。
+- **破壊的変更の検知**: 重大な変更が含まれる場合、`!` や `BREAKING CHANGE:` を自動付与します。
+- **バリデーション機能**: 生成文が規約に違反している場合はコミットを実行せず、エラーを返します。
+
+### 2. PR 説明文の生成 (`lg-gemini-pr`)
+
+ブランチ間の差分を元に、GitHub/GitLab 等のプルリクエスト作成時に使える説明文の草案を生成します。
+
+### 手動実行での確認
+
+LazyGit を介さず、コマンドラインからも直接実行して動作を確認できます：
 
 ```bash
-chmod +x bin/lg-gemini-commit
+# 変更をステージングした後
+lg-gemini-commit
 ```
 
-PATH に通すか、LazyGit の設定で絶対パスを指定してください。
+## 環境設定
 
-### 3. LazyGit に設定を追加
-
-`examples/lazygit-config-snippet.yml` の内容を `~/.config/lazygit/config.yml` に追記します。
-
-```yaml
-customCommands:
-  - key: "<c-a>"
-    context: "files"
-    description: "Gemini: generate Conventional Commit (menu)"
-    loadingText: "Generating commit message with Gemini..."
-    prompts:
-      - type: "menuFromCommand"
-        title: "Select commit message"
-        key: "SelectedMsg"
-        command: "sh -c 'set -o pipefail; COMMIT_MODE=menu lg-gemini-commit'"
-        filter: "^(?P<msg>.+\\S.*)$"
-        valueFormat: "{{ .msg }}"
-        labelFormat: "{{ .msg }}"
-    command: "git commit -m {{.Form.SelectedMsg | quote}}"
-    output: "none"
-```
-
-## 使い方
-
-1. LazyGit で変更をステージします。
-2. Files コンテキストで Ctrl+a を押します。
-3. 生成されたメッセージのメニューが表示されます。
-4. 内容がOKなら選択して commit します。
-
-## 動作確認（手動）
-
-1. staged なし → 何もしない/メッセージ表示で終了
-2. 小さな修正（1ファイル） → `fix:` または `feat:` が妥当に生成される
-3. 複数ディレクトリ変更 → scope が妥当（または scope 省略でもOK）
-4. 破壊的変更っぽい diff → `!` と `BREAKING CHANGE:` が付く（理想）
-5. 生成文が規約違反 → エラーで止まる（commit しない）
-
-## 環境変数
+以下の環境変数を使用して、AI ツールの動作を詳細にカスタマイズできます：
 
 | 変数名 | 既定値 | 内容 |
 | --- | --- | --- |
 | `MAX_DIFF_LINES` | `800` | Gemini に渡す staged diff の最大行数 |
-| `COMMIT_MSG_FILE` | `.git/.gemini_commitmsg` | 一時コミットメッセージの保存先 |
-| `GEMINI_MODEL` | `gemini-3-flash-preview` | Gemini CLI のモデル指定（存在しない場合はフォールバック） |
-| `SMALL_DIFF_MODEL` | `gemini-2.5-flash-lite` | diff が小さい場合に使うモデル |
-| `MODEL_SWITCH_LINES` | `200` | diff 行数がこの値以下なら `SMALL_DIFF_MODEL` を使用 |
-| `FALLBACK_MODEL` | `gemini-1.5-flash` | モデルが見つからない場合のフォールバック |
-| `TIMEOUT_SECONDS` | `30` | Gemini CLI のタイムアウト秒数（`timeout` がある場合のみ） |
+| `GEMINI_MODEL` | `gemini-2.0-flash-exp` | 使用する Gemini モデル |
+| `SMALL_DIFF_MODEL` | `gemini-2.0-flash-lite-preview` | 小規模な diff 用の高速モデル |
+| `MODEL_SWITCH_LINES` | `200` | 小規模モデルに切り替える行数しきい値 |
+| `TIMEOUT_SECONDS` | `30` | Gemini CLI のタイムアウト秒数 |
 
-## トラブルシュート
+## 開発・テスト
 
-### gemini が見つからない
+提供されているスクリプトの多くは、`lazygit/_tests/` 配下のシェルスクリプトでテスト可能です：
 
 ```bash
-which gemini
+bash lazygit/_tests/lazygit-ai-commit/test-message-generation.sh
 ```
 
-PATH に Gemini CLI が入っているか確認してください。
+## 注意事項 (Standalone Usage)
 
-### diff が大きすぎる
+本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) の共通
+Makefile ルール（`common-mk`）に依存しています。単独で使用する場合は、
+`common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、
+パスを適切に設定してください。
 
-`MAX_DIFF_LINES` を小さくすると安定します。
+配置後、以下のコマンドを実行して、ヘルプが表示されれば正しく設定されています：
 
 ```bash
-MAX_DIFF_LINES=400 lazygit
+make help
 ```
 
-### 生成文が規約違反で止まる
+## ライセンス
 
-Gemini の出力が以下の正規表現に一致しない場合は commit を起動しません。
-
-```text
-^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?(!)?: .+
-```
-
-ステージング内容を整理するか、もう一度 Ctrl+a を実行してください。
-
-### LazyGit の customCommands で set を使うと失敗する
-
-`command` はシェルコマンドとして実行されるため、`set -eu` を書くと `set` を実行ファイルとして解釈して失敗します。`set` はスクリプト内に書いてください。
+MIT
