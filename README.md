@@ -9,7 +9,19 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 
 - **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` (予定)
 - **LazyGit 設定**: 生産性を高めるためのカスタムコマンド、UI設定
-- **AI-Powered ツール**: Gemini AI を活用した Conventional Commits 準拠のコミットメッセージ生成、PR 説明文生成
+- **AI-Powered ツール**: Gemini AI を活用した Conventional Commits 準拠のコミットメッセージ生成、PR 説明 文生成
+
+## 管理と依存関係
+
+本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されるコンポーネントの一つです。
+
+### ⚠️ 単体使用時の注意点
+本リポジトリは `dotfiles-core` の共通 Makefile ルール（`common-mk`）に依存しています。単体で使用（クローン）する場合は、以下の手順が必要です：
+
+1. `common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、パスを適切に設定してください。
+2. `make help` を実行して、正しく設定されていることを確認してください。
+
+推奨される使用方法は、`dotfiles-core` から `make setup` を実行することです。
 
 ## ディレクトリ構成
 
@@ -91,19 +103,6 @@ lg-gemini-commit
 
 ```bash
 bash lazygit/_tests/lazygit-ai-commit/test-message-generation.sh
-```
-
-## 注意事項 (Standalone Usage)
-
-本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) の共通
-Makefile ルール（`common-mk`）に依存しています。単独で使用する場合は、
-`common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、
-パスを適切に設定してください。
-
-配置後、以下のコマンドを実行して、ヘルプが表示されれば正しく設定されています：
-
-```bash
-make help
 ```
 
 ## ライセンス

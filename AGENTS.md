@@ -8,6 +8,11 @@
 **Repository:** dotfiles-git
 **Role:** Git global configuration and Lazygit-related settings, including AI-powered commit message generation
 
+## COMPONENT LAYOUT CONVENTION
+
+This repository is part of the **dotfiles polyrepo** orchestrated by [dotfiles-core](https://github.com/yohi/dotfiles-core).
+All changes MUST comply with the central layout rules. Please refer to the central [ARCHITECTURE.md](https://raw.githubusercontent.com/yohi/dotfiles-core/refs/heads/master/docs/ARCHITECTURE.md) for the full, authoritative rules and constraints.
+
 ## STRUCTURE
 
 ```text
@@ -28,11 +33,6 @@ dotfiles-git/
 │       └── lazygit-config-snippet.yml
 └── archive/                    # Historical implementation logs
 ```
-
-## COMPONENT LAYOUT CONVENTION
-
-This repository is part of the **dotfiles polyrepo** orchestrated by `dotfiles-core`.
-All changes MUST comply with the central layout rules. Please refer to the central [ARCHITECTURE.md](https://raw.githubusercontent.com/yohi/dotfiles-core/refs/heads/master/docs/ARCHITECTURE.md) for the full, authoritative rules and constraints.
 
 ## THIS COMPONENT — SPECIAL NOTES
 
