@@ -102,3 +102,6 @@ Gemini の出力が以下の正規表現に一致しない場合は commit を�
 ### LazyGit の customCommands で set を使うと失敗する
 
 `command` はシェルコマンドとして実行されるため、`set -eu` を書くと `set` を実行ファイルとして解釈して失敗します。`set` はスクリプト内に書いてください。
+
+## ⚠️  Standalone Usage Note
+This repository depends on common Makefile fragments from [dotfiles-core](https://github.com/yohi/dotfiles-core). When using this repository standalone, ensure the  directory is present in the parent directory, or use  as the orchestrator.
