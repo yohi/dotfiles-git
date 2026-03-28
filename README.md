@@ -35,7 +35,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 make link
 ```
 
-> **Note**: `lazygit/` は `~/.config/lazygit` にリンクされます。
+> **Note**: `lazygit/config.yml` を `~/.config/lazygit/config.yml` にリンクします。
 
 ### 2. スクリプトの PATH 設定
 
@@ -99,6 +99,12 @@ bash lazygit/_tests/lazygit-ai-commit/test-message-generation.sh
 Makefile ルール（`common-mk`）に依存しています。単独で使用する場合は、
 `common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、
 パスを適切に設定してください。
+
+配置後、以下のコマンドを実行して、ヘルプが表示されれば正しく設定されています：
+
+```bash
+make help
+```
 
 ## ライセンス
 
