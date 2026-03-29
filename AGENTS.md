@@ -17,7 +17,12 @@ All changes MUST comply with the central layout rules. Please refer to the centr
 
 ```text
 dotfiles-git/
-├── _bin/                       # Public commands (added to $PATH by dotfiles-zsh)
+├── Makefile                    # Task runner for setup/link
+├── _docs/                      # Documentation
+│   ├── git-master-permission.md
+│   └── plans/                  # Implementation plans
+├── _mk/                        # Makefile modules
+│   └── git.mk                  # Git-specific Makefile logic
 ├── lazygit/                    # [Link Target] Lazygit configuration → ~/.config/lazygit
 │   ├── config.yml              # Main configuration file
 │   ├── _bin/                   # Public commands for lazygit
@@ -31,7 +36,7 @@ dotfiles-git/
 │   │   └── lazygit-ai-commit/  # AI commit tests
 │   └── examples/               # Configuration examples
 │       └── lazygit-config-snippet.yml
-└── archive/                    # Historical implementation logs
+└── README.md                   # Component overview
 ```
 
 ## THIS COMPONENT — SPECIAL NOTES
@@ -39,7 +44,7 @@ dotfiles-git/
 - `lazygit/_bin/` scripts are added to `$PATH` by dotfiles-zsh dynamically.
 - `lazygit/_scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
 - `lazygit/_tests/` use shell-based test scripts — run with `bash lazygit/_tests/lazygit-ai-commit/test-*.sh`.
-- Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make link`).
+- Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make setup` or `make link`).
 
 ## CODE STYLE
 
