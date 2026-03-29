@@ -15,7 +15,7 @@ link: ## シンボリックリンクを展開し、dotfiles を配置します
 	mkdir -p "$(HOME)/.config/lazygit"
 	ln -sfn "$(REPO_ROOT)/lazygit/config.yml" "$(HOME)/.config/lazygit/config.yml"
 
-setup: ## セットアップ（依存関係、設定適用）を一括実行します
+setup: link ## セットアップ（依存関係、設定適用）を一括実行します
 	@echo "==> Setting up dotfiles-git"
 	$(MAKE) setup-git
 

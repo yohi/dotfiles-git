@@ -2,53 +2,54 @@
 
 Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミットメッセージ生成機能を含む）を管理するコンポーネントです。
 
-## 概要
+## 主要機能
 
-このリポジトリは、開発ワークフローに不可欠な Git 環境を構築するための設定ファイルとツールを提供します。
-主な提供機能は以下の通りです：
-
-- **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` (予定)
-- **LazyGit 設定**: 生産性を高めるためのカスタムコマンド、UI設定
-- **AI-Powered ツール**: Gemini AI を活用した Conventional Commits 準拠のコミットメッセージ生成、PR 説明文生成
+- **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` の自動管理。
+- **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定。
+- **AI 搭載コミット生成**: `lg-gemini-commit` による Conventional Commits 準拠のコミットメッセージ生成。
+- **PR 説明文の生成**: `lg-gemini-pr` によるプルリクエスト説明文の自動生成。
 
 ## ディレクトリ構成
 
-`AGENTS.md` に基づく標準的な構成を採用しています：
-
-- `lazygit/`: LazyGit の設定ファイル群 (`~/.config/lazygit` へのリンク対象)
-  - `_bin/`: AI 連携スクリプト (`lg-gemini-commit`, `lg-gemini-pr`)
-  - `_scripts/`: AI コミット生成のパイプライン（内部実装）
-  - `_tests/`: シェルベースのテストスクリプト
-  - `examples/`: 設定のスニペット例
-- `_mk/`: Makefile 用の構成ファイル (`git.mk` など)
-- `_docs/`: 詳細ドキュメント
+```text
+.
+├── Makefile
+├── README.md
+├── AGENTS.md
+├── _mk/                    # Makefile sub-targets
+├── _docs/                  # Detailed documentation
+├── lazygit/                # [Link Target] Lazygit configuration → ~/.config/lazygit
+│   ├── config.yml          # Main configuration file
+│   ├── _bin/               # Public commands for lazygit
+│   ├── _scripts/           # Internal helpers
+│   ├── _tests/             # Test scripts
+│   └── examples/           # Configuration examples
+│       └── lazygit-config-snippet.yml
+└── DOTFILES_COMMON_RULES.md # Shared rules link
+```
 
 ## 導入方法
 
 このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されています。
 
-### 1. 全体セットアップ
+### 1. セットアップ
 
-`dotfiles-core` のルートディレクトリから `make` コマンドを実行します。これにより、必要なシンボリックリンクが作成されます：
+コンポーネントのディレクトリから以下のコマンドを実行します。これにより、必要なシンボリックリンクと初期設定が自動的に行われます：
 
 ```bash
-make link
+make setup
 ```
 
-> **Note**: `lazygit/config.yml` を `~/.config/lazygit/config.yml` にリンクします。
+> **Note**: `make setup` ターゲットは内部で `make link` と `make setup-git` を順に実行します。現状、シンボリックリンクの作成は `make link` によって行われますが、`_mk/git.mk` で定義されている `make setup-git` はプレースホルダーの状態であり、Git の詳細設定が必要な場合は手動で調整してください。
+
+#### 既存の設定を保持したい場合
+すでに `~/.config/lazygit/config.yml` をカスタマイズしている場合は、`make setup` を実行する代わりに、`lazygit/examples/lazygit-config-snippet.yml` の内容を既存の設定ファイルに追記してください。
 
 ### 2. スクリプトの PATH 設定
 
-`lazygit/_bin/` のスクリプト（`lg-gemini-commit` 等）は、`dotfiles-zsh`
-コンポーネントを併用している場合、自動的に `$PATH` に追加されます。
+`lazygit/_bin/` のスクリプト（`lg-gemini-commit` 等）は、`dotfiles-zsh` コンポーネントを併用している場合、自動的に `$PATH` に追加されます。
 
-### 3. LazyGit 設定の反映
-
-AI 連携などのカスタムコマンドを利用するには、
-`examples/lazygit-config-snippet.yml` の内容を
-`~/.config/lazygit/config.yml` に追記してください。
-
-## 主要機能：AI 搭載ツール
+## 詳細: AI 搭載ツール
 
 Gemini AI を活用した強力な開発補助ツールを提供し、日々の Git 操作を効率化します。
 
@@ -93,18 +94,12 @@ lg-gemini-commit
 bash lazygit/_tests/lazygit-ai-commit/test-message-generation.sh
 ```
 
-## 注意事項 (Standalone Usage)
+## 管理と依存関係
 
-本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) の共通
-Makefile ルール（`common-mk`）に依存しています。単独で使用する場合は、
-`common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、
-パスを適切に設定してください。
+本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されるコンポーネントの一つです。共通の Makefile ルール（`common-mk`）に依存しているため、単体で使用（クローン）する場合は以下の手順が必要です：
 
-配置後、以下のコマンドを実行して、ヘルプが表示されれば正しく設定されています：
-
-```bash
-make help
-```
+1. `common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、パスを適切に設定してください。
+2. `make help` を実行して、正しく設定されていることを確認してください。
 
 ## ライセンス
 
