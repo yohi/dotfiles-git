@@ -22,7 +22,9 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 │   ├── config.yml          # Main configuration file
 │   ├── _bin/               # Public commands for lazygit
 │   ├── _scripts/           # Internal helpers
-│   └── _tests/             # Test scripts
+│   ├── _tests/             # Test scripts
+│   └── examples/           # Configuration examples
+│       └── lazygit-config-snippet.yml
 └── DOTFILES_COMMON_RULES.md # Shared rules link
 ```
 
@@ -37,6 +39,9 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 ```bash
 make setup
 ```
+
+#### 既存の設定を保持したい場合
+すでに `~/.config/lazygit/config.yml` をカスタマイズしている場合は、`make setup` を実行する代わりに、`lazygit/examples/lazygit-config-snippet.yml` の内容を既存の設定ファイルに追記してください。
 
 > **Note**: `make setup` は `make link` と `make setup-git` を順に実行し、`lazygit/config.yml` を `~/.config/lazygit/config.yml` にリンクします。
 
