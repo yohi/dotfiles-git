@@ -1,28 +1,24 @@
-# Orchestrator core configuration
-# Note: These are symlinked from ../../../common-mk/ when managed by dotfiles-core
 include _mk/core.mk
 include _mk/help.mk
+-include _mk/git.mk
 
-# Component-specific logic
+.PHONY: all install setup install-git setup-git clean test
 
-.PHONY: all clean test link setup
+all: install setup ## 全てをインストールおよび設定 (デフォルト)
 
-REPO_ROOT ?= $(CURDIR)
-include _mk/git.mk
+install: install-git ## Git 関連のインストール
+setup: setup-git ## Git の設定適用
 
-link: ## シンボリックリンクを展開し、dotfiles を配置します
-	@echo "==> Linking dotfiles-git"
-	mkdir -p "$(HOME)/.config/lazygit"
-	ln -sfn "$(REPO_ROOT)/lazygit/config.yml" "$(HOME)/.config/lazygit/config.yml"
+install-git:
+	@echo "==> Installing dotfiles-git"
 
-setup: link ## セットアップ（依存関係、設定適用）を一括実行します
+setup-git:
 	@echo "==> Setting up dotfiles-git"
-	$(MAKE) setup-git
-
-all: setup ## 全て実行（setup と同一）
+	mkdir -p "$(HOME)/.config/lazygit"
+	ln -sfn "$(CURDIR)/lazygit/config.yml" "$(HOME)/.config/lazygit/config.yml"
 
 clean: ## 一時ファイルのクリーンアップ
 	@echo "==> Cleaning dotfiles-git"
 
-test: ## テスト実行（スタブ）
+test: ## テスト実行
 	@echo "==> Testing dotfiles-git"

@@ -222,13 +222,13 @@ Claude Code互換レイヤーを持つOh My OpenCodeでは、PermissionRequest �
 {
   "hooks": {
     "PermissionRequest": [
-      "scripts/auto-approve-git.sh"
+      "_scripts/auto-approve-git.sh"
     ]
   }
 }
 ```
 
-2. **判定スクリプトの作成**: `scripts/auto-approve-git.sh` を作成し、実行権限を付与する。
+2. **判定スクリプトの作成**: `_scripts/auto-approve-git.sh` を作成し、実行権限を付与する。
 
 ```bash
 #!/bin/bash
