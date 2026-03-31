@@ -1,11 +1,20 @@
 # dotfiles-git
 
+## 管理と共存関係
+
+本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles) によって管理されるコンポーネントの一つです。
+
+### ⚠️ 使用時の注意点
+本リポジトリは `dotfiles-core` の共通 Makefile ルール（`common-mk`）に依存しており、実行時には `common-mk` へのシンボリックリンクが必要です。そのため、**本リポジトリ単体での使用（クローンしての利用）はサポートされていません。**
+
+推奨される使用方法は、`dotfiles-core` リポジトリから `make setup` を実行し、適切なディレクトリ構造とシンボリックリンクが構成された状態で利用することです。
+
 Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミットメッセージ生成機能を含む）を管理するコンポーネントです。
 
 ## 主要機能
 
 - **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` の自動管理。
-- **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定。
+- **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定.
 - **AI 搭載コミット生成**: `lg-gemini-commit` による Conventional Commits 準拠のコミットメッセージ生成。
 - **PR 説明文の生成**: `lg-gemini-pr` によるプルリクエスト説明文の自動生成。
 
@@ -94,12 +103,6 @@ lg-gemini-commit
 bash lazygit/_tests/lazygit-ai-commit/test-message-generation.sh
 ```
 
-## 管理と依存関係
-
-本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されるコンポーネントの一つです。共通の Makefile ルール（`common-mk`）に依存しているため、単体で使用（クローン）する場合は以下の手順が必要です：
-
-1. `common-mk` ディレクトリを本リポジトリの親ディレクトリに配置するか、パスを適切に設定してください。
-2. `make help` を実行して、正しく設定されていることを確認してください。
 
 ## ライセンス
 
