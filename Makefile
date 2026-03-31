@@ -2,6 +2,8 @@ include _mk/core.mk
 include _mk/help.mk
 -include _mk/git.mk
 
+.PHONY: install setup install-git setup-git clean test
+
 install: install-git ## Git 関連のインストール
 setup: setup-git ## Git の設定適用
 
