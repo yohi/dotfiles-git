@@ -14,7 +14,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 ## 主要機能
 
 - **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` の自動管理。
-- **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定.
+- **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定。
 - **AI 搭載コミット生成**: `lg-gemini-commit` による Conventional Commits 準拠のコミットメッセージ生成。
 - **PR 説明文の生成**: `lg-gemini-pr` によるプルリクエスト説明文の自動生成。
 
@@ -39,7 +39,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 
 ## 導入方法
 
-このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されています。
+このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles) によって管理されています。
 
 ### 1. セットアップ
 
@@ -49,7 +49,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 make setup
 ```
 
-> **Note**: `make setup` ターゲットは内部で `make link` と `make setup-git` を順に実行します。現状、シンボリックリンクの作成は `make link` によって行われますが、`_mk/git.mk` で定義されている `make setup-git` はプレースホルダーの状態であり、Git の詳細設定が必要な場合は手動で調整してください。
+> **Note**: `make setup` ターゲットは内部で `make setup-git` を実行します。これにより、必要なシンボリックリンク（`~/.config/lazygit/config.yml`）の作成と初期設定が自動的に行われます。
 
 #### 既存の設定を保持したい場合
 すでに `~/.config/lazygit/config.yml` をカスタマイズしている場合は、`make setup` を実行する代わりに、`lazygit/examples/lazygit-config-snippet.yml` の内容を既存の設定ファイルに追記してください。

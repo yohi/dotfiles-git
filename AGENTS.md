@@ -50,7 +50,7 @@ dotfiles-git/
 - `lazygit/_bin/` scripts are added to `$PATH` by dotfiles-zsh dynamically.
 - `lazygit/_scripts/lazygit-ai-commit/` contains the AI commit generation pipeline (internal).
 - `lazygit/_tests/` use shell-based test scripts — run with `bash lazygit/_tests/lazygit-ai-commit/test-*.sh`.
-- Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make setup` or `make link`).
+- Symlinks are managed explicitly via `ln -sfn` in the Makefile (`make setup` or `make setup-git`).
 
 ## CODE STYLE
 
