@@ -5,7 +5,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 ## 管理と共存関係
 
 > [!IMPORTANT]
-> 本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles) によって管理されるコンポーネントの一つです。
+> 本リポジトリは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されるコンポーネントの一つです。
 
 > [!WARNING]
 > **使用時の注意点**
@@ -41,7 +41,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 
 ## 導入方法
 
-このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles) によって管理されています。
+このコンポーネントは [dotfiles-core](https://github.com/yohi/dotfiles-core) によって管理されています。
 
 ### 1. セットアップ
 
