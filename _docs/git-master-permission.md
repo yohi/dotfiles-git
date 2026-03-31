@@ -222,7 +222,7 @@ Claude Code互換レイヤーを持つOh My OpenCodeでは、PermissionRequest �
 {
   "hooks": {
     "PermissionRequest": [
-      "scripts/auto-approve-git.sh"
+      "_scripts/auto-approve-git.sh"
     ]
   }
 }
