@@ -178,7 +178,13 @@ MESSAGE_RAW=$(printf '%s\n' "$MESSAGE_RAW" | awk '
   /^Loaded cached credentials\./ { next }
   /^Hook registry initialized/ { next }
   /^Using project/ { next }
-  { print }
+  {
+    if (match($0, /(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)([(][^)]*[)])?(!)?: /)) {
+      print substr($0, RSTART)
+    } else {
+      print $0
+    }
+  }
 ')
 
 if [ -z "$MESSAGE_RAW" ]; then
@@ -265,7 +271,13 @@ if [ -z "$FIRST_VALID" ]; then
     /^Loaded cached credentials\./ { next }
     /^Hook registry initialized/ { next }
     /^Using project/ { next }
-    { print }
+    {
+      if (match($0, /(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)([(][^)]*[)])?(!)?: /)) {
+        print substr($0, RSTART)
+      } else {
+        print $0
+      }
+    }
   ')
 
   MESSAGE=$(printf '%s\n' "$MESSAGE_RAW" | awk '
