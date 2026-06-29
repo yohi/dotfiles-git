@@ -1,0 +1,5 @@
+.nexus/
+.DS_Store
+Thumbs.db
+*.swp
+.akane/
