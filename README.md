@@ -17,7 +17,7 @@ Git のグローバル設定および LazyGit 関連の設定（AI 搭載コミ�
 
 - **Git グローバル設定**: エイリアス、フック、グローバルな `.gitignore` の自動管理。
 - **LazyGit 統合**: 直感的な TUI による Git 操作と高度なカスタム設定。
-- **AI 搭載コミット生成**: `lg-gemini-commit` による Conventional Commits 準拠のコミットメッセージ生成。
+- **AI 搭載コミット生成**: `nxc`（[nexus-commit](https://github.com/yohi/nexus-commit)）によるローカル完結のコミットメッセージ生成（`Ctrl+a`）。Google Gemini を使う `lg-gemini-commit`（`Ctrl+b`）も利用できます。
 - **PR 説明文の生成**: `lg-gemini-pr` によるプルリクエスト説明文の自動生成。
 
 ## ディレクトリ構成
@@ -62,17 +62,27 @@ make setup
 
 ## 詳細: AI 搭載ツール
 
-Gemini AI を活用した強力な開発補助ツールを提供し、日々の Git 操作を効率化します。
+ローカル完結の `nxc`（nexus-commit）と Google Gemini を活用した開発補助ツールを提供し、日々の Git 操作を効率化します。
 
-### 1. LazyGit & Gemini AI コマンド (Ctrl+a)
+### 1. LazyGit & nxc コマンド (Ctrl+a)
 
-LazyGit の `Files` コンテキストで `Ctrl+a` を押すことで、`lg-gemini-commit` が `staged diff` を解析し、最適なコミットメッセージを生成します。
+LazyGit の `Files` コンテキストで `Ctrl+a` を押すと、`nxc`（[nexus-commit](https://github.com/yohi/nexus-commit)）が起動します。`staged diff` とローカルインデックス基盤 Nexus から取得した周辺コードの文脈をローカル LLM（Ollama 等）に渡し、**外部へのデータ送信なし**で Conventional Commits 準拠のメッセージを生成します。
+
+- **完全ローカル完結**: ソースコードを外部 SaaS に送信せず、プライバシーを保ったまま生成します。
+- **ディープ・コンテキスト**: `--auto-start-nexus` により Nexus daemon を自動起動し、周辺コードの意図まで汲み取ります。
+- **対話的フロー**: 生成 → プレビュー → 採用 / 編集 / 再生成 / 中止 を `nxc` 自身が提供し、採用時にそのままコミットします。
+
+> **前提条件**: `nxc` 本体・ローカル LLM（Ollama + `qwen2.5-coder` 等）・埋め込みモデル（`nomic-embed-text`）が必要です。`nxc --doctor` で疎通を確認できます。詳細は [nexus-commit](https://github.com/yohi/nexus-commit) を参照してください。
+
+### 2. LazyGit & Gemini AI コマンド (Ctrl+b)
+
+`Files` コンテキストで `Ctrl+b` を押すと、Google Gemini を利用した `lg-gemini-commit` が `staged diff` を解析してコミットメッセージを生成します（要 `gemini` CLI）。ネットワーク経由の高速生成が必要な場合のフォールバックとして利用できます。
 
 - **Conventional Commits v1.0.0 準拠**: `feat`, `fix`, `docs`, `refactor` などを適切に付与します。
 - **破壊的変更の検知**: 重大な変更が含まれる場合、`!` や `BREAKING CHANGE:` を自動付与します。
 - **バリデーション機能**: 生成文が規約に違反している場合はコミットを実行せず、エラーを返します。
 
-### 2. PR 説明文の生成 (`lg-gemini-pr`)
+### 3. PR 説明文の生成 (`lg-gemini-pr` / Ctrl+g)
 
 ブランチ間の差分を元に、GitHub/GitLab 等のプルリクエスト作成時に使える説明文の草案を生成します。
 
@@ -81,13 +91,29 @@ LazyGit の `Files` コンテキストで `Ctrl+a` を押すことで、`lg-gemi
 LazyGit を介さず、コマンドラインからも直接実行して動作を確認できます：
 
 ```bash
-# 変更をステージングした後
+# 変更をステージングした後（nxc / ローカル AI）
+nxc --staged
+
+# Gemini 版を使う場合
 lg-gemini-commit
 ```
 
 ## 環境設定
 
-以下の環境変数を使用して、AI ツールの動作を詳細にカスタマイズできます：
+### nxc (nexus-commit / Ctrl+a)
+
+`nxc` は環境変数で設定します。主要な変数は以下の通りです（全一覧は [nexus-commit](https://github.com/yohi/nexus-commit) を参照）：
+
+| 変数名 | 既定値 | 内容 |
+| --- | --- | --- |
+| `NEXUS_COMMIT_LLM_URL` | `http://localhost:11434/v1` | OpenAI 互換 LLM エンドポイント |
+| `NEXUS_COMMIT_LLM_MODEL` | `qwen2.5-coder:1.5b` | 使用するローカル LLM モデル |
+| `NEXUS_COMMIT_LANG` | `ja` | 生成言語（`ja` / `en`） |
+| `NEXUS_API_URL` | `http://localhost:8080` | Nexus サーバーの URL |
+
+### Gemini 版 (`lg-gemini-commit` / Ctrl+b)
+
+以下の環境変数で Gemini 版の動作をカスタマイズできます：
 
 | 変数名 | 既定値 | 内容 |
 | --- | --- | --- |

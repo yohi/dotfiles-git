@@ -174,11 +174,22 @@ if printf '%s\n' "$MESSAGE_RAW" | grep -Fq "Error executing tool"; then
 fi
 
 MESSAGE_RAW=$(printf '%s\n' "$MESSAGE_RAW" | awk '
+  BEGIN {
+    cc_re = "(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)([(][^)]*[)])?(!)?: "
+  }
   /^\(node:[0-9]+\) \[DEP0040\]/ { next }
   /^Loaded cached credentials\./ { next }
   /^Hook registry initialized/ { next }
   /^Using project/ { next }
-  { print }
+  {
+    if ($0 ~ "^" cc_re) {
+      print $0
+    } else if (match($0, "[[:space:]:]" cc_re)) {
+      print substr($0, RSTART + 1)
+    } else {
+      print $0
+    }
+  }
 ')
 
 if [ -z "$MESSAGE_RAW" ]; then
@@ -261,11 +272,22 @@ if [ -z "$FIRST_VALID" ]; then
   rm -f "$GEMINI_ERR_FILE"
 
   MESSAGE_RAW=$(printf '%s\n' "$MESSAGE_RAW" | awk '
+    BEGIN {
+      cc_re = "(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)([(][^)]*[)])?(!)?: "
+    }
     /^\(node:[0-9]+\) \[DEP0040\]/ { next }
     /^Loaded cached credentials\./ { next }
     /^Hook registry initialized/ { next }
     /^Using project/ { next }
-    { print }
+    {
+      if ($0 ~ "^" cc_re) {
+        print $0
+      } else if (match($0, "[[:space:]:]" cc_re)) {
+        print substr($0, RSTART + 1)
+      } else {
+        print $0
+      }
+    }
   ')
 
   MESSAGE=$(printf '%s\n' "$MESSAGE_RAW" | awk '
