@@ -16,6 +16,9 @@ setup-git:
 	@echo "==> Setting up dotfiles-git"
 	mkdir -p "$(HOME)/.config/lazygit"
 	ln -sfn "$(CURDIR)/lazygit/config.yml" "$(HOME)/.config/lazygit/config.yml"
+	mkdir -p "$(HOME)/.config/git"
+	ln -sfn "$(CURDIR)/ignore" "$(HOME)/.config/git/ignore"
+	git config --global core.excludesfile "$(HOME)/.config/git/ignore"
 
 clean: ## 一時ファイルのクリーンアップ
 	@echo "==> Cleaning dotfiles-git"
